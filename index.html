@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Controle Financeiro</title>
   
-  <!-- PWA - COLE AQUI -->
+  <!-- PWA -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#2563eb">
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="apple-touch-icon" href="./icon-192.jfif">
   
-  <!-- resto do código continua -->
   <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="128" fill="%232563eb"/><path d="M372 140H140c-22 0-40 18-40 40v152c0 22 18 40 40 40h232c22 0 40-18 40-40V180c0-22-18-40-40-40zm-16 116h-96c-18 0-32-14-32-32s14-32 32-32h96c9 0 16 7 16 16v32c0 9-7 16-16 16z" fill="%231d4ed8" opacity="0.3"/><path d="M368 160H144c-26.5 0-48 21.5-48 48v96c0 26.5 21.5 48 48 48h224c26.5 0 48-21.5 48-48v-96c0-26.5-21.5-48-48-48zm-16 112h-96c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16z" fill="%23ffffff"/><circle cx="288" cy="240" r="12" fill="%232563eb"/></svg>'>
   <link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="128" fill="%232563eb"/><path d="M372 140H140c-22 0-40 18-40 40v152c0 22 18 40 40 40h232c22 0 40-18 40-40V180c0-22-18-40-40-40zm-16 116h-96c-18 0-32-14-32-32s14-32 32-32h96c9 0 16 7 16 16v32c0 9-7 16-16 16z" fill="%231d4ed8" opacity="0.3"/><path d="M368 160H144c-26.5 0-48 21.5-48 48v96c0 26.5 21.5 48 48 48h224c26.5 0 48-21.5 48-48v-96c0-26.5-21.5-48-48-48zm-16 112h-96c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16z" fill="%23ffffff"/><circle cx="288" cy="240" r="12" fill="%232563eb"/></svg>'>
 
@@ -219,7 +218,7 @@
   <div class="bg-emission w-96 h-96 bg-purple-600/25 bottom-10 right-10"></div>
 
   <!-- TELA DE APRESENTAÇÃO (SPLASH SCREEN) -->
-  <div id="splash-screen" class="fixed inset-0 bg-slate-950 z-[300] flex flex-col items-center justify-center transition-all duration-750 ease-in-out">
+  <div id="splash-screen" class="fixed inset-0 bg-slate-955 z-[300] flex flex-col items-center justify-center transition-all duration-750 ease-in-out">
     <div class="relative flex flex-col items-center gap-6">
       <div class="absolute w-48 h-48 bg-blue-600/20 blur-[60px] rounded-full -top-10"></div>
       
@@ -231,7 +230,7 @@
       <!-- Branding -->
       <div class="text-center space-y-1.5 relative">
         <h1 class="font-black text-4xl uppercase tracking-widest text-white leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Controle Financeiro</h1>
-        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.4em] leading-none mt-1">Finanças do Casal</p>
+        <p class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.4em] leading-none mt-1">Finanças Locais</p>
       </div>
       
       <div class="w-6 h-6 border-2 border-slate-800 border-t-blue-500 rounded-full animate-spin mt-4"></div>
@@ -334,23 +333,13 @@
                  <span class="text-2xl font-extrabold text-slate-400 select-none">R$</span>
                  <input type="text" id="transaction-amount" inputmode="numeric" placeholder="0,00" class="bg-transparent flex-1 text-4xl font-black text-white outline-none placeholder:text-slate-850 focus:outline-none focus:ring-0 w-full" required />
                </div>
-               
-               <!-- Incrementos rápidos mais compactos e harmônicos -->
-               <div class="flex items-center gap-1 shrink-0 self-end sm:self-auto hidden">
-                 <button type="button" id="btn-add-10" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-300 font-extrabold text-xs rounded-xl border border-slate-700/60 transition-colors shadow-sm active:scale-95">+10</button>
-                 <button type="button" id="btn-add-50" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-300 font-extrabold text-xs rounded-xl border border-slate-700/60 transition-colors shadow-sm active:scale-95">+50</button>
-                 <button type="button" id="btn-add-100" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-300 font-extrabold text-xs rounded-xl border border-slate-700/60 transition-colors shadow-sm active:scale-95">+100</button>
-                 <button type="button" id="btn-clear-amount" class="w-9 h-9 bg-rose-955/40 text-rose-400 hover:bg-rose-900/20 font-extrabold text-xs rounded-xl border border-rose-900/30 transition-colors flex items-center justify-center active:scale-95" title="Limpar">
-                   <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                 </button>
-               </div>
              </div>
           </div>
           
           <div class="space-y-3">
              <div class="space-y-1">
                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Descrição</label>
-               <input type="text" id="transaction-desc" placeholder="Ex: Pingo Doce, Gasolina..." class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none focus:border-blue-500 font-bold text-sm text-slate-100" required />
+               <input type="text" id="transaction-desc" placeholder="Ex: Supermercado, Almoço..." class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none focus:border-blue-500 font-bold text-sm text-slate-100" required />
              </div>
              
              <div class="grid grid-cols-2 gap-3">
@@ -383,14 +372,15 @@
                 </div>
              </div>
 
+             <!-- Conta utilizada / Destino (Disponível para Despesa e Receita) -->
+             <div class="space-y-1" id="account-container">
+                <label id="account-label" class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Conta bancária utilizada</label>
+                <select id="transaction-card" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 uppercase">
+                </select>
+             </div>
+
              <!-- Exclusivo Despesa -->
              <div id="expense-options" class="space-y-3">
-                <div class="space-y-1">
-                   <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Conta Origem (Opcional)</label>
-                   <select id="transaction-card" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 uppercase">
-                   </select>
-                </div>
-                
                <div class="grid grid-cols-2 gap-3 items-center">
                  <span class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">COMPRA EM PRESTAÇÕES?</span>
                  <div class="flex gap-2">
@@ -463,7 +453,7 @@
 
          <div id="report-balance-card" class="bg-slate-900/80 p-4 rounded-3xl border border-slate-800/80 text-center">
            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Saldo Disponível no Mês</p>
-           <h3 id="report-balance-value" class="text-3xl font-black text-blue-400 font-bold">0,00 €</h3>
+           <h3 id="report-balance-value" class="text-3xl font-black text-blue-400">0,00 €</h3>
          </div>
       </section>
 
@@ -476,7 +466,7 @@
   <!-- EXTRATO DETALHADO -->
   <div id="statement-modal" class="hidden fixed inset-0 z-[160] bg-white flex flex-col">
      <header class="bg-slate-900 px-6 py-4 flex justify-between items-center no-print shrink-0">
-        <h2 id="statement-header-title" class="text-white font-black uppercase text-xs tracking-widest font-bold">Extrato do Casal</h2>
+        <h2 id="statement-header-title" class="text-white font-black uppercase text-xs tracking-widest">Extrato do Casal</h2>
         <div class="flex gap-2">
            <button id="btn-print-action" class="p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl active:scale-90 transition-colors"><i data-lucide="printer" class="w-5 h-5"></i></button>
            <button id="btn-share-action" class="p-3 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-xl active:scale-90 transition-colors"><i data-lucide="share-2" class="w-5 h-5"></i></button>
@@ -558,7 +548,7 @@
         <form id="form-add-category" class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3 shrink-0">
           <div class="space-y-1">
             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Nova Categoria</label>
-            <input type="text" id="new-category-name" placeholder="Ex: Restaurantes, Supermercado..." class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
+            <input type="text" id="new-category-name" placeholder="Ex: Alimentação, Moradia..." class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div class="space-y-1">
@@ -588,7 +578,7 @@
           <div class="grid grid-cols-2 gap-2">
             <div class="space-y-1">
               <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Banco</label>
-              <input type="text" id="new-card-name" placeholder="Ex: Banco do Brasil" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
+              <input type="text" id="new-card-name" placeholder="Ex: Millenium BCP" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
             </div>
             <div class="space-y-1">
               <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Ag/Conta</label>
@@ -596,7 +586,7 @@
             </div>
           </div>
           <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 active:scale-95 transition-all text-white rounded-xl font-bold flex items-center justify-center gap-1 shadow-lg">
-             <i data-lucide="plus" class="w-4 h-4"></i> Criar Conta / Cartão
+             <i data-lucide="plus" class="w-4 h-4"></i> Criar Conta
           </button>
         </form>
 
@@ -633,12 +623,12 @@
          <!-- Painel de Sincronização do Casal -->
          <div class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3.5">
              <div class="flex justify-between items-center">
-                <span class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Sincronização do Casal</span>
+                <span class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Sincronização</span>
                 <span id="cloud-status-text" class="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-black uppercase">Local</span>
              </div>
              
              <div class="space-y-1">
-                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Código de Partilha de Casal</label>
+                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Código de Partilha</label>
                 <div class="flex gap-2">
                    <input type="text" id="cloud-couple-code" placeholder="Ex: CASAL-SOUZA" class="flex-1 bg-slate-900 border border-slate-800 p-3 rounded-xl outline-none text-xs font-black uppercase tracking-wider text-white text-center focus:border-blue-500" />
                    <button type="button" id="btn-generate-code" class="px-3 py-3 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 rounded-xl active:scale-95 transition-all" title="Gerar Código Aleatório">
@@ -716,7 +706,7 @@
   <!-- MODAL DE EDIÇÃO DE CONTA -->
   <div id="edit-card-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
      <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205">
-        <h2 class="font-black text-white uppercase text-xs tracking-widest mb-6">Editar Conta / Cartão</h2>
+        <h2 class="font-black text-white uppercase text-xs tracking-widest mb-6">Editar Conta</h2>
         <form id="form-edit-card" class="space-y-4">
            <input type="hidden" id="edit-card-id" />
            <div class="space-y-1 text-left">
@@ -795,12 +785,14 @@
               </div>
            </div>
 
-           <!-- Opções Extra para Despesas (Conta e Prestações) -->
+           <!-- Conta Origem / Destino (Sempre Visível ao Editar) -->
+           <div class="space-y-1">
+              <label id="edit-trans-card-label" class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Conta bancária utilizada</label>
+              <select id="edit-trans-card" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white uppercase"></select>
+           </div>
+
+           <!-- Opções Extra para Despesas (Prestações) -->
            <div id="edit-trans-expense-options" class="space-y-3 hidden">
-              <div class="space-y-1">
-                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Conta Origem</label>
-                 <select id="edit-trans-card" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white uppercase"></select>
-              </div>
               <div class="grid grid-cols-2 gap-3 items-center">
                  <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">PRESTAÇÕES?</span>
                  <div class="flex gap-2">
@@ -846,7 +838,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const LOCAL_KEY = 'Controle_Financeiro';
     
@@ -976,16 +968,15 @@
       filterCategory: 'all', 
       filterType: 'all',
       isInstallment: false,
-      currency: 'BRL', // Moeda definida por padrão como Real Brasileiro
+      currency: 'BRL',
       drafts: {
         expense: { amount: '', desc: '', category: '', month: '', card: 'Millenium BCP', isInstallment: false, installments: 2, date: new Date().toISOString().split('T')[0], paymentMethod: 'Multibanco' },
-        income: { amount: '', desc: '', category: '', month: '', date: new Date().toISOString().split('T')[0] }
+        income: { amount: '', desc: '', category: '', month: '', date: new Date().toISOString().split('T')[0], card: 'Millenium BCP' }
       },
       quickAddTemplates: []
     };
 
     let editIsInstallment = false;
-    let confirmModalAction = null;
 
     // Inicialização da Base de Dados da Nuvem (Firebase / Firestore) com salvaguarda
     let db = null;
@@ -1030,7 +1021,7 @@
                 }
              });
           } else {
-             console.log("Firebase sem configuração activa. O app está a funcionar em modo local offline.");
+             console.log("Firebase sem configuração ativa.");
              updateSyncUI();
           }
        } catch (err) {
@@ -1271,11 +1262,6 @@
       saveActiveDraft();
     }
 
-    document.getElementById('btn-add-10').onclick = () => adjustFormAmount(10);
-    document.getElementById('btn-add-50').onclick = () => adjustFormAmount(50);
-    document.getElementById('btn-add-100').onclick = () => adjustFormAmount(100);
-    document.getElementById('btn-clear-amount').onclick = () => clearFormAmount();
-
     document.getElementById('transaction-date').addEventListener('change', (e) => {
       if (e.target.value) {
         const parts = e.target.value.split('-'); 
@@ -1299,9 +1285,9 @@
       draft.category = document.getElementById('transaction-category').value;
       draft.month = document.getElementById('transaction-month').value;
       draft.date = document.getElementById('transaction-date').value;
+      draft.card = document.getElementById('transaction-card').value;
 
       if (activeTab === 'expense') {
-        draft.card = document.getElementById('transaction-card').value;
         draft.paymentMethod = document.getElementById('transaction-method').value;
         draft.isInstallment = state.isInstallment;
         draft.installments = parseInt(document.getElementById('transaction-installments').value) || 2;
@@ -1377,15 +1363,15 @@
         categorySelect.value = "";
       }
 
-      if (activeTab === 'expense') {
-        updateCardSelect();
-        const cardSelect = document.getElementById('transaction-card');
-        if (draft.card && optionExists(cardSelect, draft.card)) {
-          cardSelect.value = draft.card;
-        } else {
-          cardSelect.selectedIndex = 0;
-        }
+      updateCardSelect();
+      const cardSelect = document.getElementById('transaction-card');
+      if (draft.card && optionExists(cardSelect, draft.card)) {
+        cardSelect.value = draft.card;
+      } else {
+        cardSelect.selectedIndex = 0;
+      }
 
+      if (activeTab === 'expense') {
         const methodSelect = document.getElementById('transaction-method');
         if (draft.paymentMethod) methodSelect.value = draft.paymentMethod;
 
@@ -1540,6 +1526,7 @@
         const submitBtn = document.getElementById('btn-submit-transaction');
         const expenseOpts = document.getElementById('expense-options');
         const inputAmount = document.getElementById('transaction-amount');
+        const accountLabel = document.getElementById('account-label');
         
         inputAmount.placeholder = "0,00";
 
@@ -1549,12 +1536,14 @@
           submitBtn.className = "w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all active:scale-[0.98] bg-rose-600 shadow-rose-900/20 font-bold";
           expenseOpts.classList.remove('hidden');
           document.getElementById('payment-method-container').classList.remove('hidden');
+          accountLabel.textContent = "Conta bancária utilizada";
         } else {
           decGlow.className = "absolute top-0 right-0 w-32 h-32 blur-[80px] -mr-16 -mt-16 bg-emerald-500/20";
           amountLabel.textContent = "Quanto recebeu?";
           submitBtn.className = "w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all active:scale-[0.98] bg-emerald-600 shadow-emerald-900/20 font-bold";
           expenseOpts.classList.add('hidden');
           document.getElementById('payment-method-container').classList.add('hidden');
+          accountLabel.textContent = "Conta recebida";
         }
       } else if (state.activeTab === 'history') {
         document.getElementById('tab-history').classList.remove('hidden');
@@ -1620,7 +1609,6 @@
 
       const available = state.customCategories.filter(c => c.type === state.activeTab);
       
-      // Sempre coloca a opção vazia primeiro obrigando a selecionar
       select.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>';
       
       if (available.length === 0) {
@@ -1635,7 +1623,6 @@
         select.appendChild(opt);
       });
       
-      // Mantém a categoria do rascunho se for válida, senão deixa no placeholder vazio
       const draft = state.drafts[state.activeTab];
       if (draft && draft.category && optionExists(select, draft.category)) {
         select.value = draft.category;
@@ -1651,9 +1638,6 @@
         const opt = document.createElement('option');
         opt.value = c.name;
         opt.textContent = c.name.toUpperCase();
-        if (c.name.includes("Millenium")) {
-          opt.selected = true;
-        }
         select.appendChild(opt);
       });
     }
@@ -1740,13 +1724,11 @@
       const categorySelect = document.getElementById('transaction-category');
       const cat = categorySelect.value;
       
-      // IMPEDE LANÇAMENTOS SEM CATEGORIA SELECIONADA
       if (!cat || cat === '') {
         showToast("Por favor, selecione uma categoria válida!", "warning");
         categorySelect.focus();
         categorySelect.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
         
-        // Remove destaque visual temporário após foco ou pequena espera
         setTimeout(() => {
           categorySelect.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
         }, 4000);
@@ -1779,17 +1761,16 @@
           billingMonth: m,
           date: dateVal,
           paymentMethod: paymentMethod,
-          cardUsed: state.activeTab === 'expense' ? card : null, 
+          cardUsed: card || null, 
           isInstallment: state.activeTab === 'expense' && state.isInstallment,
           installmentsCount: (state.activeTab === 'expense' && state.isInstallment) ? installments : 1
         });
 
-        // Limpa o rascunho ativo desta aba após salvamento bem-sucedido
         const activeTab = state.activeTab;
         state.drafts[activeTab] = {
           amount: '', desc: '', category: '', month: `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`,
-          date: new Date().toISOString().split('T')[0],
-          ...(activeTab === 'expense' ? { card: 'Millenium BCP', isInstallment: false, installments: 2, paymentMethod: 'Multibanco' } : {})
+          date: new Date().toISOString().split('T')[0], card: 'Millenium BCP',
+          ...(activeTab === 'expense' ? { isInstallment: false, installments: 2, paymentMethod: 'Multibanco' } : {})
         };
         localStorage.setItem(`drafts_${LOCAL_KEY}`, JSON.stringify(state.drafts));
 
@@ -1882,6 +1863,7 @@
               <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter bg-slate-800/40 px-1.5 py-0.5 rounded border border-slate-800">${t.category}</span>
               ${t.installmentLabel ? `<span class="text-[9px] font-black text-blue-400 bg-blue-500/5 px-1.5 py-0.5 rounded border border-blue-500/10 uppercase">${t.installmentLabel}</span>` : ''}
               ${t.paymentMethod && !isIncome ? `<span class="px-1.5 py-0.5 rounded text-[8px] font-extrabold tracking-wider uppercase ${getPaymentMethodStyle(t.paymentMethod)}">${t.paymentMethod}</span>` : ''}
+              ${t.cardUsed ? `<span class="px-1.5 py-0.5 rounded text-[8px] font-extrabold tracking-wider uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center gap-1"><i data-lucide="wallet" class="inline w-2.5 h-2.5"></i>${t.cardUsed}</span>` : ''}
             </div>
           </div>
           <div class="flex flex-col items-end gap-1.5 shrink-0">
@@ -1982,21 +1964,24 @@
         const methodContainer = document.getElementById('edit-trans-method-container');
         const expenseOpts = document.getElementById('edit-trans-expense-options');
 
+        const cardSelect = document.getElementById('edit-trans-card');
+        cardSelect.innerHTML = '<option value="">SEM CONTA / OPCIONAL</option>';
+        state.customCards.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.name;
+          opt.textContent = c.name.toUpperCase();
+          if (c.name === card) opt.selected = true;
+          cardSelect.appendChild(opt);
+        });
+
+        const editCardLabel = document.getElementById('edit-trans-card-label');
+
         if (type === 'expense') {
           monthContainer.classList.remove('col-span-2');
           monthContainer.classList.add('col-span-1');
           methodContainer.classList.remove('hidden');
           expenseOpts.classList.remove('hidden');
-
-          const cardSelect = document.getElementById('edit-trans-card');
-          cardSelect.innerHTML = '<option value="">SEM CONTA / OPCIONAL</option>';
-          state.customCards.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.name;
-            opt.textContent = c.name.toUpperCase();
-            if (c.name === card) opt.selected = true;
-            cardSelect.appendChild(opt);
-          });
+          editCardLabel.textContent = "Conta bancária utilizada";
 
           const editMethodSelect = document.getElementById('edit-trans-method');
           if (paymentMethod) editMethodSelect.value = paymentMethod;
@@ -2009,6 +1994,7 @@
           monthContainer.classList.add('col-span-2');
           methodContainer.classList.add('hidden');
           expenseOpts.classList.add('hidden');
+          editCardLabel.textContent = "Conta recebida";
         }
 
         document.getElementById('edit-transaction-modal').classList.remove('hidden');
@@ -2179,7 +2165,7 @@
           <div class="w-full space-y-3">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-1 shrink-0">
               <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Métodos de Pagamento</span>
-              <span class="text-[8px] font-bold text-slate-500 uppercase font-bold">Toque para ver detalhes</span>
+              <span class="text-[8px] font-bold text-slate-500 uppercase">Toque para ver detalhes</span>
             </div>
             <div class="grid grid-cols-2 gap-2">
         `;
@@ -2464,7 +2450,7 @@
     document.getElementById('btn-connect-cloud').onclick = () => {
        const codeInput = document.getElementById('cloud-couple-code').value.trim().toUpperCase();
        if (!codeInput) {
-          showToast("Insira um código de casal.", "warning");
+          showToast("Insira um código.", "warning");
           return;
        }
        if (!isCloudConnected) {
@@ -2562,7 +2548,6 @@
       const paymentMethod = type === 'expense' ? document.getElementById('edit-trans-method').value : null;
       const installments = parseInt(document.getElementById('edit-trans-installments').value) || 1;
 
-      // IMPEDE SALVAMENTO DE EDIÇÃO SEM CATEGORIA
       if (!cat || cat === '') {
         showToast("Por favor, selecione uma categoria válida para a transação!", "warning");
         document.getElementById('edit-trans-category').focus();
@@ -2582,7 +2567,7 @@
           billingMonth: m,
           date: tDate,
           paymentMethod: paymentMethod,
-          cardUsed: type === 'expense' ? card : null,
+          cardUsed: card || null,
           isInstallment: type === 'expense' && editIsInstallment,
           installmentsCount: (type === 'expense' && editIsInstallment) ? installments : 1
         });
@@ -2831,7 +2816,7 @@
       document.getElementById('new-card-name').value = '';
       document.getElementById('new-card-details').value = '';
 
-      showToast("Banco cadastrado com sucesso!", "success");
+      showToast("Conta criada com sucesso!", "success");
       renderFidCards();
     };
     

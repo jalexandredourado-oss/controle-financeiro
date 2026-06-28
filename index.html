@@ -1,0 +1,2958 @@
+<!DOCTYPE html>
+<html lang="pt-PT" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Controle Financeiro</title>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link class="rounded-2xl" rel="apple-touch-icon" href="./icon-192.jfif">
+  
+  <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="128" fill="%232563eb"/><path d="M372 140H140c-22 0-40 18-40 40v152c0 22 18 40 40 40h232c22 0 40-18 40-40V180c0-22-18-40-40-40zm-16 116h-96c-18 0-32-14-32-32s14-32 32-32h96c9 0 16 7 16 16v32c0 9-7 16-16 16z" fill="%231d4ed8" opacity="0.3"/><path d="M368 160H144c-26.5 0-48 21.5-48 48v96c0 26.5 21.5 48 48 48h224c26.5 0 48-21.5 48-48v-96c0-26.5-21.5-48-48-48zm-16 112h-96c-17.7 0-32-14.3-32-32s14.3-32 32-32h96c8.8 0 16 7.2 16 16v32c0 8.8-7.2 16-16 16z" fill="%23ffffff"/><circle cx="288" cy="240" r="12" fill="%232563eb"/></svg>'>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #030712; 
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .bg-slate-955 {
+      background-color: #030712 !important;
+    }
+    .bg-slate-910 {
+      background-color: #0b0f19 !important;
+    }
+    .bg-emerald-955 {
+      background-color: #022c22 !important;
+    }
+    .bg-rose-955 {
+      background-color: #4c0519 !important;
+    }
+
+    #history-list::-webkit-scrollbar, 
+    #categories-popup-list::-webkit-scrollbar, 
+    #cards-popup-list::-webkit-scrollbar, 
+    #payment-details-chart::-webkit-scrollbar, 
+    #category-details-chart::-webkit-scrollbar,
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    #history-list::-webkit-scrollbar-track, 
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    #history-list::-webkit-scrollbar-thumb, 
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 99px;
+    }
+
+    /* Salvaguarda de inputs */
+    #form-edit-transaction input, 
+    #form-edit-transaction select,
+    #form-add-category input,
+    #form-add-category select,
+    #form-add-card input,
+    #edit-category-modal input,
+    #edit-category-modal select,
+    #edit-card-modal input,
+    #search-trans-input {
+      background-color: #0b0f19 !important;
+      color: #f8fafc !important;
+      border-color: #1e293b !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+
+    select {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+
+    #form-edit-transaction select,
+    #transaction-category,
+    #transaction-month,
+    #transaction-method,
+    #transaction-card,
+    #edit-trans-category,
+    #edit-trans-month,
+    #edit-trans-method,
+    #edit-trans-card {
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 1rem center !important;
+      background-size: 1.1em !important;
+      padding-right: 2.5rem !important;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #statement-modal, #statement-modal * {
+        visibility: visible;
+      }
+      #statement-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+
+    /* Emissão Estética Glow */
+    .bg-emission {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      mix-blend-mode: screen;
+      opacity: 0.15;
+      pointer-events: none;
+      transition: all 1s ease-in-out;
+    }
+
+    .tab-transition {
+      transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+    /* Impressão do extrato */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #statement-modal,
+        #statement-modal * {
+            visibility: visible;
+        }
+
+        #statement-modal {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100%;
+            height: auto !important;
+            overflow: visible !important;
+            background: white !important;
+        }
+
+        #statement-content {
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+        }
+
+        table {
+            page-break-inside: auto;
+            width: 100%;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+
+        button {
+            display: none !important;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 12mm;
+        }
+    }
+  </style>
+</head>
+<body class="bg-slate-955 text-slate-100 overflow-hidden select-none relative min-h-screen flex justify-center font-sans">
+
+  <!-- Glow Premium de Fundo -->
+  <div class="bg-emission w-80 h-80 bg-blue-600/35 top-10 left-10"></div>
+  <div class="bg-emission w-96 h-96 bg-purple-600/25 bottom-10 right-10"></div>
+
+  <!-- TELA DE APRESENTAÇÃO (SPLASH SCREEN) -->
+  <div id="splash-screen" class="fixed inset-0 bg-slate-955 z-[300] flex flex-col items-center justify-center transition-all duration-750 ease-in-out">
+    <div class="relative flex flex-col items-center gap-6">
+      <div class="absolute w-48 h-48 bg-blue-600/20 blur-[60px] rounded-full -top-10"></div>
+      
+      <!-- Logo Animado -->
+      <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-5 rounded-3xl shadow-2xl shadow-blue-900/40 relative animate-pulse">
+        <i data-lucide="wallet" class="text-white w-12 h-12"></i>
+      </div>
+      
+      <!-- Branding -->
+      <div class="text-center space-y-1.5 relative">
+        <h1 class="font-black text-4xl uppercase tracking-widest text-white leading-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Controle Financeiro</h1>
+      </div>
+      
+      <div class="w-6 h-6 border-2 border-slate-800 border-t-blue-500 rounded-full animate-spin mt-4"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification (Mensagens Flutuantes) -->
+  <div id="toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 z-[200] px-6 py-3.5 rounded-2xl shadow-2xl border flex items-center gap-3 transition-all duration-300 transform -translate-y-12 opacity-0">
+    <div id="toast-icon-container" class="flex items-center justify-center">
+      <i data-lucide="info" class="w-5 h-5"></i>
+    </div>
+    <span id="toast-text" class="text-xs font-bold uppercase tracking-wider text-slate-100"></span>
+  </div>
+
+  <!-- MODAL DE CONFIRMAÇÃO UNIFICADO -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-[250] bg-black/85 backdrop-blur-md flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800/80 text-center animate-in zoom-in duration-205">
+        <div class="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+           <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-white font-black uppercase text-xs tracking-widest mb-2" id="confirm-modal-title">Confirmar Ação</h3>
+        <p class="text-xs text-slate-400 font-semibold mb-6 px-2" id="confirm-modal-message">Tem a certeza?</p>
+        <div class="grid grid-cols-2 gap-3">
+           <button type="button" id="btn-confirm-cancel" class="py-3.5 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 active:scale-95 transition-all">Cancelar</button>
+           <button type="button" id="btn-confirm-execute" class="py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-rose-900/40 active:scale-95 transition-all">Confirmar</button>
+        </div>
+     </div>
+  </div>
+
+  <!-- MAIN APP SCREEN -->
+  <div id="app-screen" class="h-screen w-full max-w-md md:max-w-xl flex flex-col bg-slate-955 md:border-x md:border-slate-800/60 shadow-2xl overflow-hidden relative z-10">
+    
+    <!-- Cabeçalho Principal -->
+    <header class="bg-slate-900/95 backdrop-blur-lg px-6 py-4 border-b border-slate-800/80 flex justify-between items-center shrink-0 no-print">
+      <div class="flex items-center gap-3">
+        <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg shadow-blue-900/20">
+          <i data-lucide="wallet" class="text-white w-5 h-5"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-black text-sm uppercase tracking-tight text-white leading-tight">Controle Financeiro</span>
+          <div class="flex items-center gap-1.5 mt-0.5">
+             <!-- Indicador Dinâmico de Sincronização de Nuvem -->
+             <div id="sync-badge" class="hidden items-center gap-1 bg-blue-500/15 border border-blue-500/20 px-1.5 py-0.5 rounded text-[8px] font-black uppercase text-blue-400 tracking-wider">
+                <span class="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping"></span>
+                <span>Nuvem</span>
+             </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button id="btn-show-statement" class="p-2.5 bg-slate-800/85 hover:bg-slate-750 text-slate-300 hover:text-emerald-400 rounded-xl transition-all active:scale-90" title="Ver Extrato Mensal">
+          <i data-lucide="file-text" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Barra de Abas de Navegação -->
+    <nav class="p-4 no-print shrink-0 bg-slate-955">
+      <div class="flex gap-1 p-1 bg-slate-900/80 rounded-2xl border border-slate-800/80 overflow-x-auto scrollbar-hide">
+        <button data-tab="expense" class="nav-tab-btn flex-1 py-3 rounded-xl transition-all flex flex-col items-center gap-1">
+          <i data-lucide="trending-down" class="w-4 h-4 text-rose-500"></i>
+          <span class="text-[9px] font-black uppercase tracking-widest">Despesa</span>
+        </button>
+        <button data-tab="income" class="nav-tab-btn flex-1 py-3 rounded-xl transition-all flex flex-col items-center gap-1 opacity-40">
+          <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i>
+          <span class="text-[9px] font-black uppercase tracking-widest">Receita</span>
+        </button>
+        <button data-tab="history" class="nav-tab-btn flex-1 py-3 rounded-xl transition-all flex flex-col items-center gap-1 opacity-40">
+          <i data-lucide="history" class="w-4 h-4 text-blue-500"></i>
+          <span class="text-[9px] font-black uppercase tracking-widest">Histórico</span>
+        </button>
+        <button data-tab="report" class="nav-tab-btn flex-1 py-3 rounded-xl transition-all flex flex-col items-center gap-1 opacity-40">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-purple-500"></i>
+          <span class="text-[9px] font-black uppercase tracking-widest">Relatório</span>
+        </button>
+        <button data-tab="fid" class="nav-tab-btn flex-1 py-3 rounded-xl transition-all flex flex-col items-center gap-1 opacity-40">
+          <i data-lucide="sliders" class="w-4 h-4 text-slate-400"></i>
+          <span class="text-[9px] font-black uppercase tracking-widest">Ajustes</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Conteúdo Dinâmico das Abas -->
+    <main class="flex-1 overflow-y-auto px-4 pb-24 no-print scrollbar-hide">
+      
+      <!-- Form de Lançamentos -->
+      <section id="tab-form" class="tab-content tab-transition space-y-4">
+
+        <form id="transaction-form" class="space-y-4">
+          <!-- VALOR EM DESTAQUE -->
+          <div class="bg-slate-900/90 backdrop-blur-md py-3 px-6 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col justify-between min-h-[90px]">
+             <div id="form-decor-glow" class="absolute top-0 right-0 w-32 h-32 blur-[80px] -mr-16 -mt-16 bg-rose-500/20"></div>
+             <p id="form-amount-label" class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 relative z-10">Quanto gastou?</p>
+             
+             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+               <!-- Campo de Valor com visual premium e cifrão fixo destacado -->
+               <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                 <span class="text-2xl font-extrabold text-slate-400 select-none">R$</span>
+                 <input type="text" id="transaction-amount" inputmode="numeric" placeholder="0,00" class="bg-transparent flex-1 text-4xl font-black text-white outline-none placeholder:text-slate-850 focus:outline-none focus:ring-0 w-full" required />
+               </div>
+             </div>
+          </div>
+          
+          <div class="space-y-3">
+             <div class="space-y-1">
+               <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Descrição</label>
+               <input type="text" id="transaction-desc" placeholder="Ex: Supermercado, Almoço..." class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none focus:border-blue-500 font-bold text-sm text-slate-100" required />
+             </div>
+             
+             <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Categoria</label>
+                  <select id="transaction-category" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs uppercase text-slate-200 transition-all focus:border-blue-500">
+                     <option value="" disabled selected>Selecione a categoria</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Data do Lançamento</label>
+                  <input type="date" id="transaction-date" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 focus:border-blue-500" required />
+                </div>
+             </div>
+
+             <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Mês Ref. (Faturamento)</label>
+                  <select id="transaction-month" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200">
+                  </select>
+                </div>
+                <div id="payment-method-container" class="space-y-1">
+                   <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Forma de Pagamento</label>
+                   <select id="transaction-method" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 uppercase">
+                      <option value="Multibanco">Dinheiro</option>
+                      <option value="Dinheiro">Pix</option>
+                      <option value="Débito">Débito</option>
+                      <option value="Crédito">Crédito</option>
+                   </select>
+                </div>
+             </div>
+
+             <!-- Conta Origem / Destino (Disponível para Despesa e Receita) -->
+             <div class="space-y-1" id="account-container">
+                <label id="account-label" class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Conta Origem (Opcional)</label>
+                <select id="transaction-card" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 uppercase">
+                </select>
+             </div>
+
+             <!-- Exclusivo Despesa -->
+             <div id="expense-options" class="space-y-3">
+               <div class="grid grid-cols-2 gap-3 items-center">
+                 <span class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">COMPRA EM PRESTAÇÕES?</span>
+                 <div class="flex gap-2">
+                   <button type="button" id="btn-installment-no" class="flex-1 py-1.5 bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700">NÃO</button>
+                   <button type="button" id="btn-installment-yes" class="flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent">SIM</button>
+                   <input type="number" id="transaction-installments" min="1" max="120" value="2" class="hidden w-16 p-1.5 bg-slate-800 text-center rounded-xl font-bold border border-slate-700 text-white text-xs" />
+                 </div>
+               </div>
+
+                <!-- Simulação de parcelas -->
+                <div id="installment-simulation" class="hidden p-3 bg-slate-955 rounded-2xl border border-slate-800 space-y-1.5 animate-in fade-in slide-in-from-top-1">
+                  <div class="flex justify-between items-center text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                      <span>Simulação de Prestações</span>
+                      <span id="simulation-summary">-- parcelas de --</span>
+                  </div>
+                  <div id="simulation-list" class="max-h-[85px] overflow-y-auto pr-1 space-y-1 scrollbar-hide text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+                  </div>
+                </div>
+             </div>
+          </div>
+          <button type="submit" id="btn-submit-transaction" class="w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all active:scale-[0.98] bg-rose-600 shadow-rose-900/20 font-bold">Guardar Lançamento</button>
+        </form>
+      </section>
+
+      <!-- Histórico e Procuras -->
+      <section id="tab-history" class="tab-content tab-transition hidden space-y-4">
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide" id="history-months-scroll">
+        </div>
+
+        <div id="history-balance-box" class="p-5 rounded-[2rem] border text-center transition-all bg-emerald-955/20 border-emerald-900/30">
+          <p id="history-balance-label" class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Saldo Líquido no Período</p>
+          <h3 id="history-balance-value" class="text-3xl font-black text-emerald-400">0,00 €</h3>
+        </div>
+
+        <!-- Filtros e Motor de Pesquisa -->
+        <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800/80 space-y-2.5">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+            <input type="text" id="search-trans-input" placeholder="Procurar lançamentos..." class="w-full pl-10 pr-10 py-2.5 bg-slate-955 border border-slate-800/80 rounded-xl text-xs font-medium text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-blue-500" />
+            <button id="btn-clear-search" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white hidden">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1.5 bg-slate-955 p-1 rounded-xl border border-slate-800/60 text-center">
+             <button id="filter-type-all" class="filter-type-btn py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wide bg-blue-600 text-white">Todos</button>
+             <button id="filter-type-expense" class="filter-type-btn py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wide text-slate-500 hover:text-slate-300">Despesas</button>
+             <button id="filter-type-income" class="filter-type-btn py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wide text-slate-500 hover:text-slate-300">Receitas</button>
+          </div>
+
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-hide" id="history-category-filters">
+          </div>
+        </div>
+
+        <!-- Lista de lançamentos -->
+        <div id="history-list" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+        </div>
+      </section>
+
+      <!-- Relatório Interativo Otimizado -->
+      <section id="tab-report" class="tab-content tab-transition hidden space-y-4">
+         <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide" id="report-months-scroll">
+         </div>
+         
+         <div id="report-chart-card" class="bg-slate-900/80 p-4 rounded-3xl border border-slate-800/80 flex flex-col items-center justify-center min-h-[160px] relative">
+         </div>
+
+         <div id="report-payment-card" class="bg-slate-900/80 p-4 rounded-3xl border border-slate-800/80 flex flex-col justify-center">
+         </div>
+
+         <div id="report-balance-card" class="bg-slate-900/80 p-4 rounded-3xl border border-slate-800/80 text-center">
+           <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Saldo Disponível no Mês</p>
+           <h3 id="report-balance-value" class="text-3xl font-black text-blue-400">0,00 €</h3>
+         </div>
+      </section>
+
+      <!-- Ajustes (Configuração e Sincronização) -->
+      <section id="tab-fid" class="tab-content tab-transition hidden">
+      </section>
+    </main>
+  </div>
+
+  <!-- EXTRATO DETALHADO -->
+  <div id="statement-modal" class="hidden fixed inset-0 z-[160] bg-white flex flex-col">
+     <header class="bg-slate-900 px-6 py-4 flex justify-between items-center no-print shrink-0">
+        <h2 id="statement-header-title" class="text-white font-black uppercase text-xs tracking-widest font-bold">Extrato do Casal</h2>
+        <div class="flex gap-2">
+           <button id="btn-print-action" class="p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl active:scale-90 transition-colors"><i data-lucide="printer" class="w-5 h-5"></i></button>
+           <button id="btn-share-action" class="p-3 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-xl active:scale-90 transition-colors"><i data-lucide="share-2" class="w-5 h-5"></i></button>
+           <button id="btn-close-statement" class="p-3 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-xl active:scale-90 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+     </header>
+     
+     <div id="statement-content" class="flex-1 overflow-y-auto p-10 text-slate-900 bg-white">
+        <div class="border-b-4 border-slate-900 pb-10 mb-10 flex justify-between items-end">
+           <div>
+              <h1 class="text-4xl font-black tracking-tighter uppercase leading-none">Controle Financeiro</h1>
+              <p class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mt-2">Relatório do Casal</p>
+           </div>
+           <div class="text-right">
+              <p class="text-[10px] font-black uppercase text-slate-400">Mês de Referência</p>
+              <p id="statement-period" class="font-black text-xl leading-none">--/----</p>
+              <p class="text-[8px] text-slate-400 font-bold mt-2 uppercase">Emissão: <span id="statement-date">--/--/----</span></p>
+           </div>
+        </div>
+        <div class="grid grid-cols-3 gap-6 mb-12">
+           <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
+              <p class="text-[9px] font-black text-emerald-600 uppercase mb-1">Receitas</p>
+              <p id="statement-income" class="text-2xl font-black text-emerald-700">0,00 €</p>
+           </div>
+           <div class="bg-rose-50 p-6 rounded-3xl border border-rose-100">
+              <p class="text-[9px] font-black text-rose-600 uppercase mb-1">Despesas</p>
+              <p id="statement-expense" class="text-2xl font-black text-rose-700">0,00 €</p>
+           </div>
+           <div class="bg-slate-100 p-6 rounded-3xl">
+              <p class="text-[9px] font-black text-slate-500 uppercase mb-1">Saldo Líquido</p>
+              <p id="statement-balance" class="text-2xl font-black text-slate-900">0,00 €</p>
+           </div>
+        </div>
+        <table class="w-full text-left">
+           <thead>
+              <tr class="border-b-2 border-slate-200 text-[10px] font-black uppercase text-slate-400">
+                 <th class="py-4">Descrição</th>
+                 <th class="py-4">Categoria</th>
+                 <th class="py-4 text-center">Parcela</th>
+                 <th class="py-4 text-right">Valor</th>
+              </tr>
+           </thead>
+           <tbody id="statement-table-body" class="divide-y divide-slate-100">
+           </tbody>
+        </table>
+     </div>
+  </div>
+
+  <!-- POPUP UNIFICADO DE AJUSTES E CONTROLO DE NUVEM -->
+  <div id="ajustes-manager-modal" class="hidden fixed inset-0 z-[180] bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 w-full max-w-md rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in duration-205">
+      
+      <!-- Cabeçalho -->
+      <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+        <div>
+          <h2 id="ajustes-modal-title" class="font-black text-white uppercase text-xs tracking-widest">Ajustes & Sincronização</h2>
+          <p class="text-[8px] font-bold text-slate-500 uppercase tracking-widest mt-1">Configuração Geral</p>
+        </div>
+        <button id="btn-close-ajustes-manager" class="p-2 bg-slate-800 text-slate-400 hover:text-white rounded-xl transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Abas internas -->
+      <div class="flex gap-1 p-1 bg-slate-955 rounded-xl border border-slate-800 mb-4 shrink-0">
+        <button id="modal-tab-categories" class="flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all bg-blue-600 text-white flex items-center justify-center gap-1.5">
+          <i data-lucide="tag" class="w-3.5 h-3.5"></i> Categorias
+        </button>
+        <button id="modal-tab-cards" class="flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500 flex items-center justify-center gap-1.5">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Contas
+        </button>
+        <button id="modal-tab-pref" class="flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500 flex items-center justify-center gap-1.5">
+          <i data-lucide="settings" class="w-3.5 h-3.5"></i> Nuvem / Pref
+        </button>
+      </div>
+
+      <!-- Aba 1: Categorias & Limites -->
+      <div id="modal-categories-section" class="flex-1 flex flex-col min-h-0 space-y-4">
+        <form id="form-add-category" class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3 shrink-0">
+          <div class="space-y-1">
+            <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Nova Categoria</label>
+            <input type="text" id="new-category-name" placeholder="Ex: Alimentação, Moradia..." class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Tipo</label>
+              <select id="new-category-type" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-black text-[10px] uppercase text-slate-200 cursor-pointer">
+                <option value="expense">Despesa</option>
+                <option value="income">Receita</option>
+              </select>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Limite Mensal (€)</label>
+              <input type="number" id="new-category-budget" placeholder="Opcional" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-xs text-white" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 active:scale-95 transition-all text-white rounded-xl font-bold flex items-center justify-center gap-1 shadow-lg">
+             <i data-lucide="plus" class="w-4 h-4"></i> Criar Categoria
+          </button>
+        </form>
+
+        <div class="flex-1 overflow-y-auto pr-1 space-y-2.5" id="categories-popup-list">
+        </div>
+      </div>
+
+      <!-- Aba 2: Contas Bancárias & Saldos -->
+      <div id="modal-cards-section" class="hidden flex-1 flex flex-col min-h-0 space-y-4">
+        <form id="form-add-card" class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3 shrink-0">
+          <div class="grid grid-cols-2 gap-2">
+            <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Banco</label>
+              <input type="text" id="new-card-name" placeholder="Ex: Millenium BCP" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
+            </div>
+            <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Ag/Conta</label>
+              <input type="text" id="new-card-details" placeholder="0001 / 12345-6" class="w-full bg-slate-955 border border-slate-800 p-3 rounded-xl outline-none font-bold text-sm text-white focus:border-blue-500" />
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 active:scale-95 transition-all text-white rounded-xl font-bold flex items-center justify-center gap-1 shadow-lg">
+             <i data-lucide="plus" class="w-4 h-4"></i> Criar Conta
+          </button>
+        </form>
+
+        <div class="flex-1 overflow-y-auto pr-1 space-y-2.5" id="cards-popup-list">
+        </div>
+      </div>
+
+      <!-- Aba 3: Sincronização do Casal (Nuvem) e Preferências -->
+      <div id="modal-pref-section" class="hidden flex-1 flex flex-col space-y-4 overflow-y-auto">
+         
+         <!-- Configuração do Servidor Firebase (Nuvem Privada) -->
+         <div class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3">
+             <div class="flex justify-between items-center border-b border-slate-900 pb-2">
+                <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Servidor de Nuvem</span>
+                <button type="button" id="btn-toggle-fb-help" class="text-[8px] text-blue-400 font-bold uppercase hover:underline">O que é isto?</button>
+             </div>
+             <div class="space-y-1">
+                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Firebase Config (JSON)</label>
+                <textarea id="firebase-config-input" rows="4" placeholder='{"apiKey": "...", "projectId": "...", ...}' class="w-full bg-slate-900 border border-slate-800 p-2.5 rounded-xl outline-none font-mono text-[9px] text-slate-300 placeholder:text-slate-700 focus:border-blue-500"></textarea>
+             </div>
+             <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="btn-clear-fb-config" class="w-full py-2 bg-slate-800 text-slate-455 rounded-lg font-bold text-[9px] uppercase border border-slate-700">Limpar</button>
+                <button type="button" id="btn-save-fb-config" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold text-[9px] uppercase shadow-md">Guardar</button>
+             </div>
+             <div id="fb-help-box" class="hidden p-3 bg-slate-900/50 border border-slate-800/65 rounded-xl space-y-1 text-[8.5px] text-slate-400 uppercase tracking-wide leading-relaxed font-semibold">
+                <p class="text-blue-400 font-bold">Configuração Básica de Nuvem:</p>
+                <p>1. Crie um projeto gratuito em <span class="text-white">console.firebase.google.com</span>.</p>
+                <p>2. Ative o <span class="text-white">Firestore Database</span> em "Modo de Teste".</p>
+                <p>3. Ative a <span class="text-white">Autenticação Anónima</span> nas definições de Sign-In.</p>
+                <p>4. Adicione um App Web, copie o objeto de configuração e cole-o acima.</p>
+             </div>
+         </div>
+
+         <!-- Painel de Sincronização do Casal -->
+         <div class="p-4 bg-slate-955 rounded-2xl border border-slate-800 space-y-3.5">
+             <div class="flex justify-between items-center">
+                <span class="text-[10px] font-black text-slate-300 uppercase tracking-wider">Sincronização</span>
+                <span id="cloud-status-text" class="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-black uppercase">Local</span>
+             </div>
+             
+             <div class="space-y-1">
+                <label class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Código de Partilha</label>
+                <div class="flex gap-2">
+                   <input type="text" id="cloud-couple-code" placeholder="Ex: CASAL-SOUZA" class="flex-1 bg-slate-900 border border-slate-800 p-3 rounded-xl outline-none text-xs font-black uppercase tracking-wider text-white text-center focus:border-blue-500" />
+                   <button type="button" id="btn-generate-code" class="px-3 py-3 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 rounded-xl active:scale-95 transition-all" title="Gerar Código Aleatório">
+                      <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                   </button>
+                </div>
+             </div>
+
+             <div class="grid grid-cols-2 gap-2">
+                <button type="button" id="btn-disconnect-cloud" class="w-full py-3 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-xl font-bold text-[10px] uppercase border border-slate-700">Desligar</button>
+                <button type="button" id="btn-connect-cloud" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-[10px] uppercase shadow-md shadow-blue-900/20">Ligar & Sincronizar</button>
+             </div>
+             
+             <p class="text-[8.5px] text-slate-500 leading-relaxed uppercase font-bold">Instruções: Introduzam o mesmo código de partilha nos vossos dois telemóveis para partilharem instantaneamente as vossas finanças!</p>
+         </div>
+
+      </div>
+
+      <!-- Cópia de Segurança Integrada Compacta -->
+      <div class="border-t border-slate-800 pt-4 mt-4 flex flex-col gap-3 shrink-0">
+        <div class="flex justify-between items-center">
+          <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Controlo de Dados:</span>
+          <button id="btn-danger-reset" class="px-2.5 py-1.5 bg-rose-955 text-rose-400 hover:bg-rose-900/30 active:scale-95 rounded-lg font-black text-[8px] uppercase border border-rose-900/30 transition-all flex items-center gap-1">
+            <i data-lucide="trash-2" class="w-3 h-3"></i> Apagar Tudo
+          </button>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Backup Físico:</span>
+          <div class="flex gap-1.5">
+            <button id="btn-export-backup" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 active:scale-95 text-slate-200 rounded-lg font-black text-[9px] uppercase border border-slate-700 transition-all flex items-center gap-1">
+              <i data-lucide="download" class="w-3 h-3"></i> Exportar
+            </button>
+            <label for="import-backup-file" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded-lg font-black text-[9px] uppercase shadow-md transition-all flex items-center gap-1 cursor-pointer">
+              <i data-lucide="upload" class="w-3 h-3"></i> Importar
+            </label>
+            <input type="file" id="import-backup-file" class="hidden" accept=".json" />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DE CATEGORIA -->
+  <div id="edit-category-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205">
+        <h2 class="font-black text-white uppercase text-xs tracking-widest mb-6">Editar Categoria</h2>
+        <form id="form-edit-category" class="space-y-4">
+           <input type="hidden" id="edit-category-id" />
+           <div class="space-y-1 text-left">
+             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Nome da Categoria</label>
+             <input type="text" id="edit-category-name" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-sm text-white focus:border-blue-500 text-center" required />
+           </div>
+           <div class="grid grid-cols-2 gap-2 text-left">
+             <div class="space-y-1">
+               <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Tipo</label>
+               <select id="edit-category-type" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-black text-xs uppercase text-white text-center">
+                  <option value="expense">Despesa</option>
+                  <option value="income">Receita</option>
+               </select>
+             </div>
+             <div class="space-y-1">
+               <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Limite Mensal</label>
+               <input type="number" id="edit-category-budget" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-sm text-white focus:border-blue-500 text-center" />
+             </div>
+           </div>
+           <div class="grid grid-cols-2 gap-2 pt-4">
+              <button type="button" id="btn-close-edit-category" class="py-4 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 font-bold">Cancelar</button>
+              <button type="submit" class="py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg">Guardar</button>
+           </div>
+        </form>
+     </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DE CONTA -->
+  <div id="edit-card-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205">
+        <h2 class="font-black text-white uppercase text-xs tracking-widest mb-6">Editar Conta</h2>
+        <form id="form-edit-card" class="space-y-4">
+           <input type="hidden" id="edit-card-id" />
+           <div class="space-y-1 text-left">
+             <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Nome do Banco / Conta</label>
+             <input type="text" id="edit-card-name" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-sm text-white focus:border-blue-500 text-center" required />
+           </div>
+           <div class="grid grid-cols-2 gap-2 text-left">
+             <div class="space-y-1">
+                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Tipo / Detalhes</label>
+                <input type="text" id="edit-card-details" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white text-center" />
+             </div>
+             <div class="space-y-1">
+                <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Saldo Inicial</label>
+                <input type="number" id="edit-card-initial" class="w-full p-4 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-sm text-white text-center" />
+             </div>
+           </div>
+           <div class="grid grid-cols-2 gap-2 pt-4">
+              <button type="button" id="btn-close-edit-card" class="py-4 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 font-bold">Cancelar</button>
+              <button type="submit" class="py-4 bg-purple-600 hover:bg-purple-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg">Guardar</button>
+           </div>
+        </form>
+     </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DE LANÇAMENTO -->
+  <div id="edit-transaction-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6 overflow-y-auto">
+     <div class="bg-slate-900 w-full max-w-md rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205 max-h-[90vh] overflow-y-auto scrollbar-hide">
+        <h2 class="font-black text-white uppercase text-xs tracking-widest mb-6">Editar Lançamento</h2>
+        <form id="form-edit-transaction" class="space-y-4 text-left">
+           <input type="hidden" id="edit-trans-id" />
+           <input type="hidden" id="edit-trans-type" />
+           
+           <!-- Descrição -->
+           <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Descrição</label>
+              <input type="text" id="edit-trans-desc" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-sm text-white focus:border-blue-500" required />
+           </div>
+
+           <!-- Valor -->
+           <div class="space-y-1">
+              <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Valor</label>
+              <div class="flex items-center gap-1.5 p-3.5 bg-slate-955 border border-slate-800 rounded-2xl focus-within:border-blue-500">
+                 <input type="text" id="edit-trans-amount" inputmode="numeric" class="bg-transparent flex-1 outline-none font-bold text-sm text-white text-left focus:outline-none focus:ring-0 w-full" required />
+              </div>
+           </div>
+
+           <!-- Categoria e Data -->
+           <div class="grid grid-cols-2 gap-3">
+              <div class="space-y-1">
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Categoria</label>
+                 <select id="edit-trans-category" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs uppercase text-slate-200 cursor-pointer">
+                    <option value="" disabled>Selecione a categoria</option>
+                 </select>
+              </div>
+              <div class="space-y-1">
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Data</label>
+                 <input type="date" id="edit-trans-date" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white" required />
+              </div>
+           </div>
+
+           <!-- Mês e Método de Pagamento -->
+           <div class="grid grid-cols-2 gap-3">
+              <div id="edit-trans-month-container" class="space-y-1">
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Mês Ref.</label>
+                 <select id="edit-trans-month" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white"></select>
+              </div>
+              <div id="edit-trans-method-container" class="space-y-1">
+                 <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Forma Pagamento</label>
+                 <select id="edit-trans-method" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white uppercase">
+                    <option value="Multibanco">Multibanco</option>
+                    <option value="MB Way">MB Way</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Débito">Débito</option>
+                    <option value="Crédito">Crédito</option>
+                 </select>
+              </div>
+           </div>
+
+           <!-- Conta Origem / Destino (Sempre Visível ao Editar) -->
+           <div class="space-y-1">
+              <label id="edit-trans-card-label" class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Conta Origem</label>
+              <select id="edit-trans-card" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white uppercase"></select>
+           </div>
+
+           <!-- Opções Extra para Despesas (Prestações) -->
+           <div id="edit-trans-expense-options" class="space-y-3 hidden">
+              <div class="grid grid-cols-2 gap-3 items-center">
+                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">PRESTAÇÕES?</span>
+                 <div class="flex gap-2">
+                    <button type="button" id="btn-edit-installment-no" class="flex-1 py-1.5 bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700">NÃO</button>
+                    <button type="button" id="btn-edit-installment-yes" class="flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent">SIM</button>
+                    <input type="number" id="edit-trans-installments" min="1" max="120" value="2" class="hidden w-16 p-1.5 bg-slate-800 text-center rounded-xl font-bold border border-slate-700 text-white text-xs" />
+                 </div>
+              </div>
+           </div>
+
+           <!-- Botões de Ação -->
+           <div class="grid grid-cols-2 gap-2 pt-4">
+              <button type="button" id="btn-close-edit-trans" class="py-4 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 font-bold">Cancelar</button>
+              <button type="submit" class="py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg">Guardar</button>
+           </div>
+        </form>
+     </div>
+  </div>
+
+  <!-- MODAL DE OPÇÕES DE AÇÃO PARA LANÇAMENTOS (POPUP) -->
+  <div id="transaction-options-modal" class="hidden fixed inset-0 z-[200] bg-black/85 backdrop-blur-md flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800/80 text-center animate-in zoom-in duration-205">
+        <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
+           <i data-lucide="sliders" class="w-6 h-6"></i>
+        </div>
+        <h3 class="text-white font-black uppercase text-xs tracking-widest mb-1" id="options-modal-title">Opções do Lançamento</h3>
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-6" id="options-modal-desc">O que deseja fazer com este lançamento?</p>
+        
+        <div class="flex flex-col gap-2.5">
+           <button type="button" id="btn-opt-edit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <i data-lucide="edit-2" class="w-4 h-4"></i> Editar Lançamento
+           </button>
+           <button type="button" id="btn-opt-clone" class="w-full py-3.5 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded-2xl font-black text-[10px] uppercase border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <i data-lucide="copy" class="w-4 h-4"></i> Duplicar Lançamento
+           </button>
+           <button type="button" id="btn-opt-delete" class="w-full py-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-rose-900/40 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <i data-lucide="trash-2" class="w-4 h-4"></i> Excluir Lançamento
+           </button>
+           <button type="button" id="btn-opt-cancel" class="w-full py-3.5 bg-slate-850 hover:bg-slate-800 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-800 active:scale-95 transition-all">
+              Cancelar
+           </button>
+        </div>
+     </div>
+  </div>
+
+  <!-- MODAL DE DETALHES DE PAGAMENTO -->
+  <div id="payment-details-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205">
+        <h2 id="payment-details-title" class="font-black text-white uppercase text-xs tracking-widest mb-4">Gastos</h2>
+        <div id="payment-details-chart" class="max-h-[300px] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar mb-6">
+           <!-- Dinâmico -->
+        </div>
+        <button type="button" id="btn-close-payment-details" class="w-full py-4 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 font-bold">Fechar</button>
+     </div>
+  </div>
+
+  <!-- MODAL DE DETALHES DE CATEGORIA -->
+  <div id="category-details-modal" class="hidden fixed inset-0 z-[190] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
+     <div class="bg-slate-900 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl border border-slate-800 text-center animate-in zoom-in duration-205">
+        <h2 id="category-details-title" class="font-black text-white uppercase text-xs tracking-widest mb-4">Categoria</h2>
+        <div id="category-details-chart" class="max-h-[300px] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar mb-6">
+           <!-- Dinâmico -->
+        </div>
+        <button type="button" id="btn-close-category-details" class="w-full py-4 bg-slate-800 hover:bg-slate-750 text-slate-400 rounded-2xl font-black text-[10px] uppercase border border-slate-700 font-bold">Fechar</button>
+     </div>
+  </div>
+
+  <!-- SCRIPT INTEGRADO: Lógica Firebase e Aplicação Real-time -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const LOCAL_KEY = 'Controle_Financeiro';
+    
+    // Configurações de Moedas Suportadas
+    const CURRENCY_CONFIGS = {
+      'EUR': { locale: 'pt-PT', symbol: '€', code: 'EUR' },
+      'BRL': { locale: 'pt-BR', symbol: 'R$', code: 'BRL' },
+      'USD': { locale: 'en-US', symbol: '$', code: 'USD' },
+      'AOA': { locale: 'pt-AO', symbol: 'Kz', code: 'AOA' }
+    };
+
+    function formatCurrency(val) {
+      const conf = CURRENCY_CONFIGS[state.currency] || CURRENCY_CONFIGS['BRL'];
+      return val.toLocaleString(conf.locale, { style: 'currency', currency: conf.code });
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const toastIconContainer = document.getElementById('toast-icon-container');
+      if (!toast || !toastText) return;
+      
+      toastText.textContent = msg;
+      
+      if (type === 'success') {
+        toastIconContainer.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>';
+      } else if (type === 'error') {
+        toastIconContainer.innerHTML = '<i data-lucide="x-circle" class="w-5 h-5 text-rose-500"></i>';
+      } else if (type === 'warning') {
+        toastIconContainer.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500"></i>';
+      } else {
+        toastIconContainer.innerHTML = '<i data-lucide="info" class="w-5 h-5 text-blue-400"></i>';
+      }
+      
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+      
+      toast.classList.remove('hidden', '-translate-y-12', 'opacity-0');
+      toast.classList.add('translate-y-0');
+      
+      setTimeout(() => {
+        toast.classList.add('-translate-y-12', 'opacity-0');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3000);
+    }
+
+    function showConfirmModal(title, message, executeCallback) {
+      const modal = document.getElementById('confirm-modal');
+      if (!modal) return;
+      document.getElementById('confirm-modal-title').textContent = title;
+      document.getElementById('confirm-modal-message').textContent = message;
+      
+      modal.classList.remove('hidden');
+      
+      document.getElementById('btn-confirm-cancel').onclick = () => {
+        modal.classList.add('hidden');
+      };
+      
+      document.getElementById('btn-confirm-execute').onclick = () => {
+        modal.classList.add('hidden');
+        executeCallback();
+      };
+    }
+
+    function getPaymentMethodStyle(method) {
+      switch (method) {
+        case 'Multibanco': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+        case 'MB Way': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+        case 'Dinheiro': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        case 'Débito': return 'bg-orange-500/10 text-orange-400 border border-orange-500/20';
+        case 'Crédito': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        default: return 'bg-slate-800 text-slate-400';
+      }
+    }
+
+    function getMethodIconAndStyle(method) {
+      switch (method) {
+        case 'Multibanco': return { icon: 'credit-card', iconColor: 'bg-blue-500/10 text-blue-400' };
+        case 'MB Way': return { icon: 'smartphone', iconColor: 'bg-purple-500/10 text-purple-400' };
+        case 'Dinheiro': return { icon: 'banknote', iconColor: 'bg-emerald-500/10 text-emerald-400' };
+        case 'Débito': return { icon: 'credit-card', iconColor: 'bg-orange-500/10 text-orange-400' };
+        case 'Crédito': return { icon: 'credit-card', iconColor: 'bg-rose-500/10 text-rose-400' };
+        default: return { icon: 'dollar-sign', iconColor: 'bg-slate-800 text-slate-400' };
+      }
+    }
+
+    function getCategoryIconAndStyle(catName) {
+      const lower = catName.toLowerCase();
+      if (lower.includes('aliment') || lower.includes('restaurante') || lower.includes('caf')) {
+        return { icon: 'shopping-cart', iconColor: 'bg-amber-500/10 text-amber-400' };
+      } else if (lower.includes('morad') || lower.includes('casa') || lower.includes('rend')) {
+        return { icon: 'home', iconColor: 'bg-blue-500/10 text-blue-400' };
+      } else if (lower.includes('transport') || lower.includes('carro') || lower.includes('combust')) {
+        return { icon: 'car', iconColor: 'bg-indigo-500/10 text-indigo-400' };
+      } else if (lower.includes('lazer') || lower.includes('viagem') || lower.includes('ferias')) {
+        return { icon: 'palmtree', iconColor: 'bg-emerald-500/10 text-emerald-400' };
+      } else if (lower.includes('saud') || lower.includes('farmac')) {
+        return { icon: 'heart', iconColor: 'bg-rose-500/10 text-rose-400' };
+      } else if (lower.includes('salari') || lower.includes('venciment')) {
+        return { icon: 'banknote', iconColor: 'bg-emerald-500/10 text-emerald-400' };
+      } else {
+        return { icon: 'tag', iconColor: 'bg-slate-800 text-slate-400' };
+      }
+    }
+
+    window.updateDonutCenter = function(name, amount, percent) {
+      document.getElementById('donut-center-label').textContent = name;
+      document.getElementById('donut-center-value').textContent = amount;
+      const sub = document.getElementById('donut-center-sub');
+      sub.textContent = percent;
+      sub.classList.remove('hidden');
+    };
+
+    window.resetDonutCenter = function(totalOutflowsFormatted) {
+      document.getElementById('donut-center-label').textContent = 'Despesas';
+      document.getElementById('donut-center-value').textContent = totalOutflowsFormatted;
+      document.getElementById('donut-center-sub').classList.add('hidden');
+    };
+
+    const state = {
+      transactions: [],
+      customCategories: [],
+      customCards: [],
+      activeTab: 'expense',
+      fidSubTab: 'categories', 
+      selectedHistoryMonth: `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`,
+      searchQuery: '',
+      filterCategory: 'all', 
+      filterType: 'all',
+      isInstallment: false,
+      currency: 'BRL',
+      drafts: {
+        expense: { amount: '', desc: '', category: '', month: '', card: 'Millenium BCP', isInstallment: false, installments: 2, date: new Date().toISOString().split('T')[0], paymentMethod: 'Multibanco' },
+        income: { amount: '', desc: '', category: '', month: '', date: new Date().toISOString().split('T')[0], card: 'Millenium BCP' }
+      },
+      quickAddTemplates: []
+    };
+
+    let editIsInstallment = false;
+
+    // Inicialização da Base de Dados da Nuvem (Firebase / Firestore) com salvaguarda
+    let db = null;
+    let auth = null;
+    let isCloudConnected = false;
+    let cloudUnsubscribe = null;
+    let authUser = null;
+    const appId = 'Controle-Financeiro-casal-v2';
+
+    async function initFirebase() {
+       try {
+          let configStr = localStorage.getItem(`firebase_config_${LOCAL_KEY}`);
+          let firebaseConfig = null;
+
+          if (configStr) {
+             try { firebaseConfig = JSON.parse(configStr); } catch (e) {}
+          }
+
+          if (!firebaseConfig && typeof __firebase_config !== 'undefined' && __firebase_config) {
+             firebaseConfig = JSON.parse(__firebase_config);
+          }
+
+          if (firebaseConfig) {
+             const app = initializeApp(firebaseConfig);
+             auth = getAuth(app);
+             db = getFirestore(app);
+
+             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+             } else {
+                await signInAnonymously(auth);
+             }
+
+             onAuthStateChanged(auth, (user) => {
+                authUser = user;
+                if (user) {
+                   isCloudConnected = true;
+                   updateSyncUI();
+                   if (state.sharingCode) {
+                      activateRealtimeSync();
+                   }
+                }
+             });
+          } else {
+             console.log("Firebase sem configuração ativa.");
+             updateSyncUI();
+          }
+       } catch (err) {
+          console.warn("Sincronização offline integrada.", err);
+       }
+    }
+
+    function getCoupleDocRef(code) {
+       if (!db) return null;
+       const cleanedCode = code.trim().toUpperCase();
+       return doc(db, 'artifacts', appId, 'public', 'data', 'couple_finances', cleanedCode);
+    }
+
+    function activateRealtimeSync() {
+       if (!db || !authUser || !state.sharingCode) return;
+
+       if (cloudUnsubscribe) cloudUnsubscribe();
+
+       const docRef = getCoupleDocRef(state.sharingCode);
+       
+       cloudUnsubscribe = onSnapshot(docRef, (docSnap) => {
+          if (docSnap.exists()) {
+             const data = docSnap.data();
+             const localCount = state.transactions.length;
+             const incomingCount = (data.transactions || []).length;
+
+             state.transactions = data.transactions || [];
+             state.customCategories = data.categories || [];
+             state.customCards = data.cards || [];
+             if (data.currency) state.currency = data.currency;
+
+             localStorage.setItem(`transactions_${LOCAL_KEY}`, JSON.stringify(state.transactions));
+             localStorage.setItem(`categories_${LOCAL_KEY}`, JSON.stringify(state.customCategories));
+             localStorage.setItem(`cards_${LOCAL_KEY}`, JSON.stringify(state.customCards));
+             localStorage.setItem(`currency_${LOCAL_KEY}`, state.currency);
+
+             if (incomingCount !== localCount && localCount > 0) {
+                showToast("Finanças sincronizadas e atualizadas!", "success");
+             }
+             
+             renderAll();
+             updateSyncUI();
+          } else {
+             uploadLocalDataToCloud();
+          }
+       }, (error) => {
+          console.error("Erro na nuvem:", error);
+          showToast("Erro de ligação à base de dados.", "error");
+       });
+    }
+
+    async function uploadLocalDataToCloud() {
+       if (!db || !authUser || !state.sharingCode) return;
+       const docRef = getCoupleDocRef(state.sharingCode);
+       try {
+          await setDoc(docRef, {
+             transactions: state.transactions,
+             categories: state.customCategories,
+             cards: state.customCards,
+             currency: state.currency,
+             lastUpdatedBy: authUser.uid,
+             lastUpdatedAt: new Date().toISOString()
+          });
+          updateSyncUI();
+       } catch (err) {
+          console.error("Erro ao sincronizar dados na nuvem:", err);
+       }
+    }
+
+    function updateSyncUI() {
+       const badge = document.getElementById('sync-badge');
+       const statusText = document.getElementById('cloud-status-text');
+       
+       if (state.sharingCode && isCloudConnected) {
+          if (badge) { badge.classList.remove('hidden'); badge.classList.add('flex'); }
+          if (statusText) {
+             statusText.textContent = `LIGADO: ${state.sharingCode.toUpperCase()}`;
+             statusText.className = "text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-black uppercase";
+          }
+       } else {
+          if (badge) { badge.classList.remove('flex'); badge.classList.add('hidden'); }
+          if (statusText) {
+             statusText.textContent = "Modo Local (Sem partilha)";
+             statusText.className = "text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-black uppercase";
+          }
+       }
+    }
+
+    const DB = {
+      async addDoc(collectionName, data) {
+        const localData = getLocalCollection(collectionName);
+        const newDoc = { id: crypto.randomUUID(), ...data, createdAt: new Date().toISOString() };
+        localData.push(newDoc);
+        localStorage.setItem(collectionName, JSON.stringify(localData));
+        syncLocalState(collectionName, localData);
+        
+        if (state.sharingCode && isCloudConnected) {
+           await uploadLocalDataToCloud();
+        } else {
+           renderAll();
+        }
+      },
+      async deleteDoc(collectionName, id) {
+        let localData = getLocalCollection(collectionName);
+        localData = localData.filter(item => item.id !== id);
+        localStorage.setItem(collectionName, JSON.stringify(localData));
+        syncLocalState(collectionName, localData);
+        
+        if (state.sharingCode && isCloudConnected) {
+           await uploadLocalDataToCloud();
+        } else {
+           renderAll();
+        }
+      },
+      async updateDoc(collectionName, id, data) {
+        let localData = getLocalCollection(collectionName);
+        localData = localData.map(item => item.id === id ? { ...item, ...data } : item);
+        localStorage.setItem(collectionName, JSON.stringify(localData));
+        syncLocalState(collectionName, localData);
+        
+        if (state.sharingCode && isCloudConnected) {
+           await uploadLocalDataToCloud();
+        } else {
+           renderAll();
+        }
+      }
+    };
+
+    function syncLocalState(collectionName, data) {
+      if (collectionName === `transactions_${LOCAL_KEY}`) state.transactions = data;
+      if (collectionName === `categories_${LOCAL_KEY}`) state.customCategories = data;
+      if (collectionName === `cards_${LOCAL_KEY}`) state.customCards = data;
+      if (collectionName === `quickadd_${LOCAL_KEY}`) state.quickAddTemplates = data;
+    }
+
+    function getLocalCollection(collectionName) {
+      const data = localStorage.getItem(collectionName);
+      return data ? JSON.parse(data) : [];
+    }
+
+    function initApp() {
+      seedLocalData();
+
+      state.transactions = getLocalCollection(`transactions_${LOCAL_KEY}`);
+      state.customCategories = getLocalCollection(`categories_${LOCAL_KEY}`);
+      state.customCards = getLocalCollection(`cards_${LOCAL_KEY}`);
+      state.quickAddTemplates = getLocalCollection(`quickadd_${LOCAL_KEY}`);
+      
+      const savedCode = localStorage.getItem(`sharingCode_${LOCAL_KEY}`);
+      if (savedCode) {
+         state.sharingCode = savedCode;
+         document.getElementById('cloud-couple-code').value = savedCode;
+      }
+
+      const savedCurrency = localStorage.getItem(`currency_${LOCAL_KEY}`);
+      if (savedCurrency) state.currency = savedCurrency;
+
+      const savedDrafts = localStorage.getItem(`drafts_${LOCAL_KEY}`);
+      if (savedDrafts) {
+        try { state.drafts = JSON.parse(savedDrafts); } catch (e) {}
+      }
+
+      const savedFbConfig = localStorage.getItem(`firebase_config_${LOCAL_KEY}`);
+      if (savedFbConfig) {
+         document.getElementById('firebase-config-input').value = JSON.stringify(JSON.parse(savedFbConfig), null, 2);
+      }
+
+      populateStaticSelects();
+      renderAll();
+      initFirebase();
+    }
+
+    function seedLocalData() {
+      const catKey = `categories_${LOCAL_KEY}`;
+      if (getLocalCollection(catKey).length === 0) {
+        const defaultCats = [
+          { id: crypto.randomUUID(), name: "Alimentação", type: "expense", budget: 300 },
+          { id: crypto.randomUUID(), name: "Moradia", type: "expense", budget: 750 },
+          { id: crypto.randomUUID(), name: "Transporte", type: "expense", budget: 120 },
+          { id: crypto.randomUUID(), name: "Lazer", type: "expense", budget: 80 },
+          { id: crypto.randomUUID(), name: "Porto Seguro", type: "expense", budget: 40 },
+          { id: crypto.randomUUID(), name: "Salário", type: "income", budget: 0 },
+          { id: crypto.randomUUID(), name: "Investimentos", type: "income", budget: 0 }
+        ];
+        localStorage.setItem(catKey, JSON.stringify(defaultCats));
+        state.customCategories = defaultCats;
+      }
+      
+      const cardKey = `cards_${LOCAL_KEY}`;
+      if (getLocalCollection(cardKey).length === 0) {
+        const defaultCards = [
+          { id: crypto.randomUUID(), name: "Carteira Dinheiro", details: "Físico", initial: 40 },
+          { id: crypto.randomUUID(), name: "Millenium BCP", details: "Conta Principal" },
+          { id: crypto.randomUUID(), name: "Revolut", details: "Gastos Diários", initial: 200 }
+        ];
+        localStorage.setItem(cardKey, JSON.stringify(defaultCards));
+        state.customCards = defaultCards;
+      }
+
+      const quickKey = `quickadd_${LOCAL_KEY}`;
+      if (!localStorage.getItem(quickKey)) {
+        localStorage.setItem(quickKey, JSON.stringify(state.quickAddTemplates));
+      } else {
+        state.quickAddTemplates = JSON.parse(localStorage.getItem(quickKey));
+      }
+    }
+
+    function populateStaticSelects() {
+      const monthSelect = document.getElementById('transaction-month');
+      monthSelect.innerHTML = '';
+      
+      const list = getBillingMonthsList();
+      list.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        if (m === `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`) opt.selected = true;
+        monthSelect.appendChild(opt);
+      });
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('transaction-date').value = todayStr;
+    }
+
+    function adjustFormAmount(val) {
+      const amtInput = document.getElementById('transaction-amount');
+      let raw = amtInput.value.replace(/\D/g, "");
+      let currentVal = raw ? parseFloat(raw) / 100 : 0;
+      currentVal += val;
+      
+      amtInput.value = currentVal.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      saveActiveDraft();
+    }
+
+    function clearFormAmount() {
+      const amtInput = document.getElementById('transaction-amount');
+      amtInput.value = '';
+      saveActiveDraft();
+    }
+
+    document.getElementById('transaction-date').addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-'); 
+        if (parts.length === 3) {
+          const billingRef = `${parts[1]}/${parts[0]}`;
+          const select = document.getElementById('transaction-month');
+          addBillingMonthOptionIfMissing(select, billingRef);
+          select.value = billingRef;
+        }
+      }
+      saveActiveDraft();
+    });
+
+    function saveActiveDraft() {
+      const activeTab = state.activeTab;
+      if (activeTab !== 'expense' && activeTab !== 'income') return;
+
+      const draft = state.drafts[activeTab];
+      draft.amount = document.getElementById('transaction-amount').value;
+      draft.desc = document.getElementById('transaction-desc').value;
+      draft.category = document.getElementById('transaction-category').value;
+      draft.month = document.getElementById('transaction-month').value;
+      draft.date = document.getElementById('transaction-date').value;
+      draft.card = document.getElementById('transaction-card').value;
+
+      if (activeTab === 'expense') {
+        draft.paymentMethod = document.getElementById('transaction-method').value;
+        draft.isInstallment = state.isInstallment;
+        draft.installments = parseInt(document.getElementById('transaction-installments').value) || 2;
+      }
+
+      localStorage.setItem(`drafts_${LOCAL_KEY}`, JSON.stringify(state.drafts));
+      updateInstallmentSimulation();
+    }
+
+    function updateInstallmentSimulation() {
+       const simContainer = document.getElementById('installment-simulation');
+       const simList = document.getElementById('simulation-list');
+       
+       if (state.activeTab !== 'expense' || !state.isInstallment) {
+          simContainer.classList.add('hidden');
+          return;
+       }
+
+       const amountRaw = document.getElementById('transaction-amount').value.replace(/\D/g, "");
+       const num = parseFloat(amountRaw) / 100;
+       const installmentsCount = parseInt(document.getElementById('transaction-installments').value) || 2;
+       const startMonth = document.getElementById('transaction-month').value;
+
+       if (isNaN(num) || num <= 0 || !startMonth) {
+          simContainer.classList.add('hidden');
+          return;
+       }
+
+       simContainer.classList.remove('hidden');
+       document.getElementById('simulation-summary').textContent = `${installmentsCount}x de ${formatCurrency(num / installmentsCount)}`;
+       simList.innerHTML = '';
+
+       const parts = startMonth.split('/');
+       if (parts.length === 2) {
+          let [m, y] = parts.map(Number);
+          for (let i = 0; i < installmentsCount; i++) {
+             let d = new Date(y, m - 1 + i, 1);
+             const displayMonth = `${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+             
+             const simItem = document.createElement('div');
+             simItem.className = "flex justify-between items-center py-1.5 border-b border-slate-900";
+             simItem.innerHTML = `
+                <span>Parcela ${i + 1}/${installmentsCount}</span>
+                <span class="text-slate-500 font-bold">${displayMonth}</span>
+                <span class="text-white font-black">${formatCurrency(num / installmentsCount)}</span>
+             `;
+             simList.appendChild(simItem);
+          }
+       }
+    }
+
+    function restoreActiveDraft() {
+      const activeTab = state.activeTab;
+      if (activeTab !== 'expense' && activeTab !== 'income') return;
+
+      const draft = state.drafts[activeTab];
+      document.getElementById('transaction-amount').value = draft.amount || '';
+      document.getElementById('transaction-desc').value = draft.desc || '';
+      
+      const monthSelect = document.getElementById('transaction-month');
+      const fallbackMonth = `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`;
+      const targetMonth = draft.month || fallbackMonth;
+      
+      addBillingMonthOptionIfMissing(monthSelect, targetMonth);
+      monthSelect.value = targetMonth;
+      document.getElementById('transaction-date').value = draft.date || new Date().toISOString().split('T')[0];
+
+      updateCategorySelect();
+      const categorySelect = document.getElementById('transaction-category');
+      if (draft.category && optionExists(categorySelect, draft.category)) {
+        categorySelect.value = draft.category;
+      } else {
+        categorySelect.value = "";
+      }
+
+      updateCardSelect();
+      const cardSelect = document.getElementById('transaction-card');
+      if (draft.card && optionExists(cardSelect, draft.card)) {
+        cardSelect.value = draft.card;
+      } else {
+        cardSelect.selectedIndex = 0;
+      }
+
+      if (activeTab === 'expense') {
+        const methodSelect = document.getElementById('transaction-method');
+        if (draft.paymentMethod) methodSelect.value = draft.paymentMethod;
+
+        state.isInstallment = draft.isInstallment || false;
+        document.getElementById('transaction-installments').value = draft.installments || 2;
+
+        if (state.isInstallment) {
+          document.getElementById('transaction-installments').classList.remove('hidden');
+          document.getElementById('btn-installment-no').className = "flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent";
+          document.getElementById('btn-installment-yes').className = "flex-1 py-1.5 bg-slate-855 text-white rounded-xl text-xs font-bold border border-slate-700";
+        } else {
+          document.getElementById('transaction-installments').classList.add('hidden');
+          document.getElementById('btn-installment-yes').className = "flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent";
+          document.getElementById('btn-installment-no').className = "flex-1 py-1.5 bg-slate-855 text-white rounded-xl text-xs font-bold border border-slate-700";
+        }
+        updateInstallmentSimulation();
+      }
+    }
+
+    function optionExists(selectElement, value) {
+      return Array.from(selectElement.options).some(option => option.value === value);
+    }
+
+    function expandedTransactions() {
+      let expanded = [];
+      state.transactions.forEach(t => {
+        if (t.isInstallment && t.installmentsCount > 1) {
+          for (let i = 0; i < t.installmentsCount; i++) {
+            const parts = t.billingMonth.split('/');
+            if (parts.length === 2) {
+              let [m, y] = parts.map(Number);
+              let d = new Date(y, m - 1 + i, 1);
+              expanded.push({ 
+                ...t, 
+                displayMonth: `${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`, 
+                displayAmount: t.amount / t.installmentsCount, 
+                installmentLabel: `${i + 1}/${t.installmentsCount}` 
+              });
+            }
+          }
+        } else { 
+          expanded.push({ ...t, displayMonth: t.billingMonth, displayAmount: t.amount, installmentLabel: null }); 
+        }
+      });
+      return expanded;
+    }
+
+    function getMonthsWithTransactions() {
+      const expanded = expandedTransactions();
+      const months = expanded.map(t => t.displayMonth).filter(Boolean);
+      const uniqueMonths = [...new Set(months)];
+      
+      if (uniqueMonths.length === 0) {
+        const currentMonth = `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`;
+        return [currentMonth];
+      }
+      
+      uniqueMonths.sort((a, b) => {
+        const [mA, yA] = a.split('/').map(Number);
+        const [mB, yB] = b.split('/').map(Number);
+        return yA !== yB ? yA - yB : mA - mB;
+      });
+      
+      return uniqueMonths;
+    }
+
+    function getMonthSummary(monthStr) {
+      const data = expandedTransactions().filter(t => t.displayMonth === monthStr);
+      return data.reduce((acc, curr) => {
+        if (curr.type === 'income') acc.income += curr.displayAmount; else acc.expense += curr.displayAmount;
+        acc.balance = acc.income - acc.expense;
+        return acc;
+      }, { income: 0, expense: 0, balance: 0 });
+    }
+
+    function getCardBalances() {
+      const cardBalances = {};
+      state.customCards.forEach(c => {
+        cardBalances[c.name] = parseFloat(c.initial) || 0;
+      });
+
+      state.transactions.forEach(t => {
+        if (t.cardUsed && cardBalances[t.cardUsed] !== undefined) {
+          if (t.type === 'income') {
+            cardBalances[t.cardUsed] += t.amount;
+          } else {
+            cardBalances[t.cardUsed] -= t.amount;
+          }
+        }
+      });
+
+      return cardBalances;
+    }
+
+    function renderMonthScroll(containerId, activeMonth, callback) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const activeMonthsList = getMonthsWithTransactions();
+      
+      activeMonthsList.forEach(m => {
+        const btn = document.createElement('button');
+        btn.textContent = m;
+        btn.className = `px-5 py-2.5 rounded-full text-[10px] font-black whitespace-nowrap transition-all border ${activeMonth === m ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-900/30' : 'bg-slate-900 border-slate-800/80 text-slate-500'}`;
+        btn.onclick = () => callback(m);
+        container.appendChild(btn);
+      });
+    }
+
+    function cloneTransaction(data) {
+      const today = new Date().toISOString().split('T')[0];
+      const todayParts = today.split('-');
+      const currentBillingMonth = `${todayParts[1]}/${todayParts[0]}`;
+      
+      showConfirmModal("Duplicar Lançamento", `Deseja duplicar este registo para o dia de hoje?`, async () => {
+        try {
+          await DB.addDoc(`transactions_${LOCAL_KEY}`, {
+            description: data.desc + " (Cópia)",
+            amount: parseFloat(data.amount),
+            type: data.type,
+            category: data.category,
+            billingMonth: currentBillingMonth,
+            date: today,
+            paymentMethod: data.method || null,
+            cardUsed: data.card || null,
+            isInstallment: data.installment === "true" || data.installment === true,
+            installmentsCount: parseInt(data.installmentsCount) || 1
+          });
+          showToast("Lançamento duplicado!", "success");
+        } catch (err) {
+          showToast("Erro ao duplicar.", "error");
+        }
+      });
+    }
+
+    function renderAll() {
+      const validMonths = getMonthsWithTransactions();
+      if (!validMonths.includes(state.selectedHistoryMonth)) {
+        state.selectedHistoryMonth = validMonths[validMonths.length - 1] || `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`;
+      }
+
+      updateCategorySelect();
+      updateCardSelect();
+
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      
+      if (state.activeTab === 'expense' || state.activeTab === 'income') {
+        document.getElementById('tab-form').classList.remove('hidden');
+        restoreActiveDraft();
+
+        const decGlow = document.getElementById('form-decor-glow');
+        const amountLabel = document.getElementById('form-amount-label');
+        const submitBtn = document.getElementById('btn-submit-transaction');
+        const expenseOpts = document.getElementById('expense-options');
+        const inputAmount = document.getElementById('transaction-amount');
+        const accountLabel = document.getElementById('account-label');
+        
+        inputAmount.placeholder = "0,00";
+
+        if (state.activeTab === 'expense') {
+          decGlow.className = "absolute top-0 right-0 w-32 h-32 blur-[80px] -mr-16 -mt-16 bg-rose-500/20";
+          amountLabel.textContent = "Quanto gastou?";
+          submitBtn.className = "w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all active:scale-[0.98] bg-rose-600 shadow-rose-900/20 font-bold";
+          expenseOpts.classList.remove('hidden');
+          document.getElementById('payment-method-container').classList.remove('hidden');
+          accountLabel.textContent = "Conta Origem (Opcional)";
+        } else {
+          decGlow.className = "absolute top-0 right-0 w-32 h-32 blur-[80px] -mr-16 -mt-16 bg-emerald-500/20";
+          amountLabel.textContent = "Quanto recebeu?";
+          submitBtn.className = "w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl transition-all active:scale-[0.98] bg-emerald-600 shadow-emerald-900/20 font-bold";
+          expenseOpts.classList.add('hidden');
+          document.getElementById('payment-method-container').classList.add('hidden');
+          accountLabel.textContent = "Conta Destino (Opcional)";
+        }
+      } else if (state.activeTab === 'history') {
+        document.getElementById('tab-history').classList.remove('hidden');
+        renderMonthScroll('history-months-scroll', state.selectedHistoryMonth, (m) => { state.selectedHistoryMonth = m; renderAll(); });
+        renderHistoryList();
+        renderHistoryFilterChips();
+      } else if (state.activeTab === 'report') {
+        document.getElementById('tab-report').classList.remove('hidden');
+        renderMonthScroll('report-months-scroll', state.selectedHistoryMonth, (m) => { state.selectedHistoryMonth = m; renderAll(); });
+        renderReportChart();
+      }
+      
+      updateSyncUI();
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function openAjustesModal(subTab = 'categories') {
+      state.fidSubTab = subTab;
+      
+      const modal = document.getElementById('ajustes-manager-modal');
+      const catTabBtn = document.getElementById('modal-tab-categories');
+      const cardTabBtn = document.getElementById('modal-tab-cards');
+      const prefTabBtn = document.getElementById('modal-tab-pref');
+      
+      const catSection = document.getElementById('modal-categories-section');
+      const cardSection = document.getElementById('modal-cards-section');
+      const prefSection = document.getElementById('modal-pref-section');
+      
+      catTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+      cardTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+      prefTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all text-slate-500";
+
+      catSection.classList.add('hidden');
+      cardSection.classList.add('hidden');
+      prefSection.classList.add('hidden');
+
+      if (subTab === 'categories') {
+        catTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all bg-blue-600 text-white font-bold flex items-center justify-center gap-1.5";
+        catSection.classList.remove('hidden');
+        renderFidCategories();
+      } else if (subTab === 'cards') {
+        cardTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all bg-purple-600 text-white font-bold flex items-center justify-center gap-1.5";
+        cardSection.classList.remove('hidden');
+        renderFidCards();
+      } else {
+        prefTabBtn.className = "flex-1 py-2 rounded-lg text-[10px] font-black uppercase transition-all bg-indigo-600 text-white font-bold flex items-center justify-center gap-1.5";
+        prefSection.classList.remove('hidden');
+        document.getElementById('cloud-couple-code').value = state.sharingCode || '';
+      }
+      
+      modal.classList.remove('hidden');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function updateCategorySelect() {
+      const select = document.getElementById('transaction-category');
+      if (!select) return;
+
+      const available = state.customCategories.filter(c => c.type === state.activeTab);
+      
+      select.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>';
+      
+      if (available.length === 0) {
+        select.innerHTML += '<option value="" disabled>Sem Categorias (Crie em Ajustes)</option>';
+        return;
+      }
+      
+      available.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        select.appendChild(opt);
+      });
+      
+      const draft = state.drafts[state.activeTab];
+      if (draft && draft.category && optionExists(select, draft.category)) {
+        select.value = draft.category;
+      } else {
+        select.value = ""; 
+      }
+    }
+
+    function updateCardSelect() {
+      const select = document.getElementById('transaction-card');
+      select.innerHTML = '<option value="">SEM CONTA / OPCIONAL</option>';
+      state.customCards.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name.toUpperCase();
+        select.appendChild(opt);
+      });
+    }
+
+    const amountInput = document.getElementById('transaction-amount');
+    amountInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, "");
+      if (!value) {
+        e.target.value = "";
+        saveActiveDraft();
+        return;
+      }
+      const numValue = parseFloat(value) / 100;
+      e.target.value = numValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      saveActiveDraft();
+    });
+
+    document.getElementById('transaction-desc').addEventListener('input', saveActiveDraft);
+    document.getElementById('transaction-category').addEventListener('change', saveActiveDraft);
+    document.getElementById('transaction-month').addEventListener('change', saveActiveDraft);
+    document.getElementById('transaction-card').addEventListener('change', saveActiveDraft);
+    document.getElementById('transaction-method').addEventListener('change', saveActiveDraft);
+    document.getElementById('transaction-installments').addEventListener('input', saveActiveDraft);
+
+    const searchInput = document.getElementById('search-trans-input');
+    const clearSearchBtn = document.getElementById('btn-clear-search');
+    searchInput.addEventListener('input', (e) => {
+      state.searchQuery = e.target.value.toLowerCase().trim();
+      if (state.searchQuery) {
+        clearSearchBtn.classList.remove('hidden');
+      } else {
+        clearSearchBtn.classList.add('hidden');
+      }
+      renderHistoryList();
+    });
+
+    clearSearchBtn.onclick = () => {
+      searchInput.value = '';
+      state.searchQuery = '';
+      clearSearchBtn.classList.add('hidden');
+      renderHistoryList();
+    };
+
+    function renderHistoryFilterChips() {
+      const row = document.getElementById('history-category-filters');
+      row.innerHTML = '';
+
+      const allBtn = document.createElement('button');
+      allBtn.textContent = 'TODAS';
+      allBtn.className = `px-3.5 py-1.5 rounded-xl text-[9px] font-black tracking-wide shrink-0 transition-all border ${state.filterCategory === 'all' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-955 border-slate-800/80 text-slate-500 hover:text-slate-300'}`;
+      allBtn.onclick = () => { state.filterCategory = 'all'; renderHistoryFilterChips(); renderHistoryList(); };
+      row.appendChild(allBtn);
+
+      const uniqueCategoriesInMonth = [...new Set(expandedTransactions()
+        .filter(t => t.displayMonth === state.selectedHistoryMonth)
+        .map(t => t.category)
+      )];
+
+      uniqueCategoriesInMonth.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat.toUpperCase();
+        btn.className = `px-3.5 py-1.5 rounded-xl text-[9px] font-black tracking-wide shrink-0 transition-all border ${state.filterCategory === cat ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-955 border-slate-800/80 text-slate-500 hover:text-slate-300'}`;
+        btn.onclick = () => { state.filterCategory = cat; renderHistoryFilterChips(); renderHistoryList(); };
+        row.appendChild(btn);
+      });
+    }
+
+    document.querySelectorAll('.filter-type-btn').forEach(btn => {
+       btn.onclick = () => {
+          document.querySelectorAll('.filter-type-btn').forEach(b => b.className = "filter-type-btn py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wide text-slate-500 hover:text-slate-300");
+          btn.className = "filter-type-btn py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wide bg-blue-600 text-white";
+          
+          if (btn.id === 'filter-type-all') state.filterType = 'all';
+          else if (btn.id === 'filter-type-expense') state.filterType = 'expense';
+          else state.filterType = 'income';
+
+          renderHistoryList();
+       };
+    });
+
+    document.getElementById('transaction-form').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const categorySelect = document.getElementById('transaction-category');
+      const cat = categorySelect.value;
+      
+      if (!cat || cat === '') {
+        showToast("Por favor, selecione uma categoria válida!", "warning");
+        categorySelect.focus();
+        categorySelect.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/50');
+        
+        setTimeout(() => {
+          categorySelect.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
+        }, 4000);
+        return;
+      }
+      
+      categorySelect.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/50');
+      
+      const amountRaw = document.getElementById('transaction-amount').value.replace(/\D/g, "");
+      const num = parseFloat(amountRaw) / 100;
+      
+      const desc = document.getElementById('transaction-desc').value.trim();
+      const m = document.getElementById('transaction-month').value;
+      const card = document.getElementById('transaction-card').value;
+      const installments = parseInt(document.getElementById('transaction-installments').value) || 2;
+      const dateVal = document.getElementById('transaction-date').value;
+      const paymentMethod = state.activeTab === 'expense' ? document.getElementById('transaction-method').value : null;
+      
+      if (!desc || isNaN(num) || num <= 0) {
+        showToast("Insira uma descrição e um valor maior que zero!", "warning");
+        return;
+      }
+      
+      try {
+        await DB.addDoc(`transactions_${LOCAL_KEY}`, {
+          description: desc, 
+          amount: num, 
+          type: state.activeTab, 
+          category: cat, 
+          billingMonth: m,
+          date: dateVal,
+          paymentMethod: paymentMethod,
+          cardUsed: card || null, 
+          isInstallment: state.activeTab === 'expense' && state.isInstallment,
+          installmentsCount: (state.activeTab === 'expense' && state.isInstallment) ? installments : 1
+        });
+
+        const activeTab = state.activeTab;
+        state.drafts[activeTab] = {
+          amount: '', desc: '', category: '', month: `${(new Date().getMonth() + 1).toString().padStart(2, '0')}/${new Date().getFullYear()}`,
+          date: new Date().toISOString().split('T')[0], card: 'Millenium BCP',
+          ...(activeTab === 'expense' ? { isInstallment: false, installments: 2, paymentMethod: 'Multibanco' } : {})
+        };
+        localStorage.setItem(`drafts_${LOCAL_KEY}`, JSON.stringify(state.drafts));
+
+        document.getElementById('transaction-desc').value = '';
+        document.getElementById('transaction-amount').value = '';
+        state.isInstallment = false;
+        document.getElementById('transaction-installments').classList.add('hidden');
+        document.getElementById('installment-simulation').classList.add('hidden');
+        document.getElementById('btn-installment-yes').className = "flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent";
+        document.getElementById('btn-installment-no').className = "flex-1 py-1.5 bg-slate-855 text-white rounded-xl text-xs font-bold border border-slate-700";
+        showToast("Lançamento guardado com sucesso!", "success");
+        state.activeTab = 'history';
+        state.selectedHistoryMonth = m;
+        renderAll();
+      } catch (err) { 
+        showToast("Erro ao guardar o lançamento", "error"); 
+      }
+    };
+
+    function showTransactionOptions(t) {
+      const modal = document.getElementById('transaction-options-modal');
+      modal.classList.remove('hidden');
+
+      document.getElementById('btn-opt-edit').onclick = () => {
+         modal.classList.add('hidden');
+         triggerEditTransaction(t);
+      };
+
+      document.getElementById('btn-opt-clone').onclick = () => {
+         modal.classList.add('hidden');
+         cloneTransaction({
+           desc: t.description,
+           amount: t.amount,
+           type: t.type,
+           category: t.category,
+           method: t.paymentMethod,
+           card: t.cardUsed,
+           installment: t.isInstallment,
+           installmentsCount: t.installmentsCount
+         });
+      };
+
+      document.getElementById('btn-opt-delete').onclick = () => {
+         modal.classList.add('hidden');
+         showConfirmModal("Eliminar Lançamento", "Tem a certeza de que deseja eliminar definitivamente este lançamento?", async () => {
+            await DB.deleteDoc(`transactions_${LOCAL_KEY}`, t.id); 
+            showToast("Lançamento eliminado!", "success"); 
+         });
+      };
+
+      document.getElementById('btn-opt-cancel').onclick = () => {
+         modal.classList.add('hidden');
+      };
+    }
+
+    function triggerEditTransaction(t) {
+      const tId = t.id;
+      const type = t.type;
+      const desc = t.description;
+      const totalAmount = parseFloat(t.amount);
+      const category = t.category;
+      const month = t.billingMonth;
+      const tDate = t.date || new Date().toISOString().split('T')[0];
+      const card = t.cardUsed;
+      const paymentMethod = t.paymentMethod;
+      const isInstallment = t.isInstallment;
+      const installmentsCount = parseInt(t.installmentsCount) || 1;
+
+      document.getElementById('edit-trans-id').value = tId;
+      document.getElementById('edit-trans-type').value = type;
+      document.getElementById('edit-trans-desc').value = desc;
+      document.getElementById('edit-trans-amount').value = totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('edit-trans-date').value = tDate;
+      
+      const catSelect = document.getElementById('edit-trans-category');
+      catSelect.innerHTML = '<option value="" disabled>Selecione a categoria</option>';
+      const availableCats = state.customCategories.filter(c => c.type === type);
+      availableCats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        if (c.name === category) opt.selected = true;
+        catSelect.appendChild(opt);
+      });
+
+      const monthSelect = document.getElementById('edit-trans-month');
+      monthSelect.innerHTML = '';
+      getBillingMonthsList().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        if (m === month) opt.selected = true;
+        monthSelect.appendChild(opt);
+      });
+      addBillingMonthOptionIfMissing(monthSelect, month);
+      monthSelect.value = month;
+
+      const monthContainer = document.getElementById('edit-trans-month-container');
+      const methodContainer = document.getElementById('edit-trans-method-container');
+      const expenseOpts = document.getElementById('edit-trans-expense-options');
+
+      const cardSelect = document.getElementById('edit-trans-card');
+      cardSelect.innerHTML = '<option value="">SEM CONTA / OPCIONAL</option>';
+      state.customCards.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name.toUpperCase();
+        if (c.name === card) opt.selected = true;
+        cardSelect.appendChild(opt);
+      });
+
+      const editCardLabel = document.getElementById('edit-trans-card-label');
+
+      if (type === 'expense') {
+        monthContainer.classList.remove('col-span-2');
+        monthContainer.classList.add('col-span-1');
+        methodContainer.classList.remove('hidden');
+        expenseOpts.classList.remove('hidden');
+        editCardLabel.textContent = "Conta Origem";
+
+        const editMethodSelect = document.getElementById('edit-trans-method');
+        if (paymentMethod) editMethodSelect.value = paymentMethod;
+
+        editIsInstallment = isInstallment;
+        document.getElementById('edit-trans-installments').value = installmentsCount;
+        updateEditInstallmentButtons();
+      } else {
+        monthContainer.classList.remove('col-span-1');
+        monthContainer.classList.add('col-span-2');
+        methodContainer.classList.add('hidden');
+        expenseOpts.classList.add('hidden');
+        editCardLabel.textContent = "Conta Destino";
+      }
+
+      document.getElementById('edit-transaction-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('history-list');
+      container.innerHTML = '';
+      
+      let list = expandedTransactions().filter(t => t.displayMonth === state.selectedHistoryMonth);
+
+      if (state.filterType !== 'all') {
+         list = list.filter(t => t.type === state.filterType);
+      }
+
+      if (state.filterCategory !== 'all') {
+        list = list.filter(t => t.category === state.filterCategory);
+      }
+
+      if (state.searchQuery) {
+        list = list.filter(t => 
+          t.description.toLowerCase().includes(state.searchQuery) || 
+          t.category.toLowerCase().includes(state.searchQuery) ||
+          (t.paymentMethod && t.paymentMethod.toLowerCase().includes(state.searchQuery))
+        );
+      }
+
+      let computedBalance = 0;
+      list.forEach(t => {
+        if (t.type === 'income') {
+          computedBalance += t.displayAmount;
+        } else {
+          computedBalance -= t.displayAmount;
+        }
+      });
+
+      const balanceValue = document.getElementById('history-balance-value');
+      balanceValue.textContent = formatCurrency(computedBalance);
+
+      const balanceBox = document.getElementById('history-balance-box');
+      balanceBox.className = `p-5 rounded-[2rem] border text-center transition-all ${computedBalance >= 0 ? 'bg-emerald-955/20 border-emerald-900/30 text-emerald-400' : 'bg-rose-955/20 border-rose-900/30 text-rose-400'}`;
+
+      const balanceLabel = document.getElementById('history-balance-label');
+      if (balanceLabel) {
+        if (state.filterCategory === 'all') {
+          balanceLabel.textContent = "Saldo Líquido no Período";
+        } else {
+          balanceLabel.textContent = `Saldo Líquido - ${state.filterCategory.toUpperCase()}`;
+        }
+      }
+      
+      if (list.length === 0) { 
+        container.innerHTML = `<p class="text-center py-10 text-[10px] font-black text-slate-700 uppercase italic">Nenhum registo encontrado</p>`; 
+        return; 
+      }
+      
+      list.forEach((t) => {
+        const item = document.createElement('div');
+        // Adicionado cursor-pointer para deixar claro que a caixa inteira é clicável
+        item.className = "bg-slate-900/50 p-4 rounded-2xl border border-slate-850/80 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-2 duration-300 hover:bg-slate-900/80 transition-all cursor-pointer";
+        const isIncome = t.type === 'income';
+
+        let formattedDate = '';
+        if (t.date) {
+          const dateParts = t.date.split('-');
+          if (dateParts.length === 3) formattedDate = `${dateParts[2]}/${dateParts[1]}`;
+        }
+
+        item.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            ${formattedDate ? `<span class="text-[10px] font-extrabold text-slate-400 shrink-0 select-none">${formattedDate}</span>` : ''}
+            <div class="p-3 rounded-xl ${isIncome ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'} shrink-0">
+              <i data-lucide="${isIncome ? 'trending-up' : 'trending-down'}" class="w-4 h-4"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="font-bold text-sm uppercase truncate text-slate-100">${t.description}</p>
+              <div class="flex flex-wrap items-center gap-1.5 mt-1">
+                <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter bg-slate-800/40 px-1.5 py-0.5 rounded border border-slate-800">${t.category}</span>
+                ${t.installmentLabel ? `<span class="text-[9px] font-black text-blue-400 bg-blue-500/5 px-1.5 py-0.5 rounded border border-blue-500/10 uppercase">${t.installmentLabel}</span>` : ''}
+                ${t.paymentMethod && !isIncome ? `<span class="px-1.5 py-0.5 rounded text-[8px] font-extrabold tracking-wider uppercase ${getPaymentMethodStyle(t.paymentMethod)}">${t.paymentMethod}</span>` : ''}
+                ${t.cardUsed ? `<span class="px-1.5 py-0.5 rounded text-[8px] font-extrabold tracking-wider uppercase bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center gap-1"><i data-lucide="wallet" class="inline w-2.5 h-2.5"></i>${t.cardUsed}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col items-end shrink-0">
+            <p class="font-black text-sm whitespace-nowrap ${isIncome ? 'text-emerald-400' : 'text-slate-100'}">
+              ${formatCurrency(t.displayAmount)}
+            </p>
+          </div>
+        `;
+
+        // Lógica de abertura do modal de opções ao clicar na caixa do histórico
+        item.onclick = () => {
+           showTransactionOptions(t);
+        };
+
+        container.appendChild(item);
+      });
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function renderReportChart() {
+      const monthData = expandedTransactions().filter(t => t.displayMonth === state.selectedHistoryMonth);
+      const chartCard = document.getElementById('report-chart-card');
+      const paymentCard = document.getElementById('report-payment-card');
+      const balanceVal = document.getElementById('report-balance-value');
+      
+      const summary = getMonthSummary(state.selectedHistoryMonth);
+      balanceVal.textContent = formatCurrency(summary.income - summary.expense);
+      
+      const balanceCard = document.getElementById('report-balance-card');
+      balanceCard.className = `bg-slate-900/80 p-5 rounded-3xl border border-slate-800/80 text-center ${summary.income - summary.expense >= 0 ? 'text-blue-400' : 'text-rose-400'}`;
+      
+      chartCard.innerHTML = '';
+      paymentCard.innerHTML = '';
+      
+      if (monthData.length === 0) { 
+        const emptyState = `<div class="text-center py-6 opacity-30"><i data-lucide="bar-chart-3" class="w-10 h-10 mx-auto mb-1"></i><p class="text-[9px] font-black uppercase tracking-widest">Sem dados registados no período</p></div>`;
+        chartCard.innerHTML = emptyState; 
+        paymentCard.innerHTML = emptyState;
+        if (typeof lucide !== 'undefined') lucide.createIcons(); 
+        return; 
+      }
+
+      const categoryTotals = {};
+      const paymentTotals = {};
+      const paymentCategories = {}; 
+      let totalOutflows = 0;
+
+      monthData.forEach(t => {
+        if (!categoryTotals[t.category]) {
+          categoryTotals[t.category] = { amount: 0, type: t.type };
+        }
+        categoryTotals[t.category].amount += t.displayAmount;
+
+        if (t.type === 'expense') {
+          totalOutflows += t.displayAmount;
+          const method = t.paymentMethod || 'Não Definido';
+          const cat = t.category || 'Outros';
+
+          if (!paymentTotals[method]) {
+            paymentTotals[method] = 0;
+          }
+          paymentTotals[method] += t.displayAmount;
+
+          if (!paymentCategories[method]) {
+            paymentCategories[method] = {};
+          }
+          if (!paymentCategories[method][cat]) {
+            paymentCategories[method][cat] = 0;
+          }
+          paymentCategories[method][cat] += t.displayAmount;
+        }
+      });
+
+      const sortedCategories = Object.entries(categoryTotals).map(([name, data]) => ({
+        name,
+        amount: data.amount,
+        type: data.type
+      })).sort((a, b) => b.amount - a.amount);
+
+      let svgRingHtml = '';
+      if (totalOutflows > 0) {
+        let accumulatedPercent = 0;
+        const radius = 50;
+        const circ = 2 * Math.PI * radius;
+        
+        const colorPalette = ["#f43f5e", "#a855f7", "#3b82f6", "#eab308", "#14b8a6", "#6366f1"];
+        
+        let segments = '';
+        sortedCategories.filter(c => c.type === 'expense').forEach((cat, index) => {
+          const ratio = cat.amount / totalOutflows;
+          const strokeLength = ratio * circ;
+          const strokeOffset = circ - strokeLength + (accumulatedPercent * circ);
+          const color = colorPalette[index % colorPalette.length];
+          accumulatedPercent -= ratio;
+
+          segments += `
+            <circle cx="60" cy="60" r="${radius}" 
+              fill="transparent" 
+              stroke="${color}" 
+              stroke-width="12" 
+              stroke-dasharray="${strokeLength} ${circ}" 
+              stroke-dashoffset="${strokeOffset}" 
+              transform="rotate(-90 60 60)" 
+              class="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+              onmouseover="updateDonutCenter('${cat.name}', '${formatCurrency(cat.amount)}', '${Math.round(ratio*100)}%')"
+              onmouseout="resetDonutCenter('${formatCurrency(totalOutflows)}')" />
+          `;
+        });
+
+        svgRingHtml = `
+          <div class="flex flex-col sm:flex-row items-center gap-6 w-full">
+            <div class="relative w-32 h-32 shrink-0">
+              <svg width="100%" height="100%" viewBox="0 0 120 120" class="transform -scale-x-100">
+                <circle cx="60" cy="60" r="${radius}" fill="transparent" stroke="#0b0f19" stroke-width="12" />
+                ${segments}
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-2">
+                <span id="donut-center-label" class="text-[8px] font-black uppercase text-slate-500 tracking-wider">Despesas</span>
+                <span id="donut-center-value" class="text-xs font-black text-white leading-tight">${formatCurrency(totalOutflows)}</span>
+                <span id="donut-center-sub" class="text-[9px] font-extrabold text-blue-400 hidden mt-0.5 leading-none"></span>
+              </div>
+            </div>
+            
+            <div class="flex-1 w-full space-y-2.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
+              <div class="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-1">Distribuição de Despesas</div>
+        `;
+
+        sortedCategories.forEach((cat, index) => {
+          const barColor = cat.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500';
+          const ratioPercent = totalOutflows > 0 ? Math.round((cat.amount / totalOutflows) * 100) : 0;
+          
+          svgRingHtml += `
+            <div class="category-report-item hover:bg-slate-800/40 p-1.5 rounded-xl transition-all cursor-pointer flex justify-between items-center" data-category="${cat.name}" data-type="${cat.type}">
+              <div class="flex items-center gap-2 text-[10px] font-extrabold text-slate-200 uppercase tracking-wide">
+                <span class="w-2 h-2 rounded-full ${barColor}"></span>
+                <span>${cat.name}</span>
+                ${cat.type === 'expense' ? `<span class="text-[8px] text-slate-550">(${ratioPercent}%)</span>` : ''}
+              </div>
+              <span class="text-xs font-black text-slate-100">${formatCurrency(cat.amount)}</span>
+            </div>
+          `;
+        });
+
+        svgRingHtml += `
+            </div>
+          </div>
+        `;
+      } else {
+        svgRingHtml = `
+          <div class="w-full text-center py-4 space-y-2">
+            <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Apenas Entradas Registadas</div>
+            <div class="text-2xl font-black text-emerald-400">${formatCurrency(summary.income)}</div>
+          </div>
+        `;
+      }
+
+      chartCard.innerHTML = svgRingHtml;
+
+      chartCard.querySelectorAll('.category-report-item').forEach(el => {
+        el.onclick = () => {
+          const catName = el.dataset.category;
+          const catType = el.dataset.type;
+          showCategoryDetailsModal(catName, catType, monthData);
+        };
+      });
+
+      const sortedPayments = Object.entries(paymentTotals).sort((a, b) => b[1] - a[1]);
+
+      if (sortedPayments.length === 0) {
+        paymentCard.innerHTML = `
+          <div class="text-center py-6 opacity-30">
+            <p class="text-xs font-bold uppercase tracking-widest">Sem despesas registradas.</p>
+          </div>
+        `;
+      } else {
+        let paymentHtml = `
+          <div class="w-full space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-1 shrink-0">
+              <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Métodos de Pagamento</span>
+              <span class="text-[8px] font-bold text-slate-500 uppercase">Toque para ver detalhes</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+        `;
+
+        sortedPayments.forEach(([method, amount]) => {
+          const { icon, iconColor } = getMethodIconAndStyle(method);
+
+          paymentHtml += `
+            <div class="payment-method-item bg-slate-955/50 p-2 rounded-xl border border-slate-850/80 flex items-center gap-2 animate-in fade-in duration-300 cursor-pointer hover:bg-slate-800/30 active:scale-95 transition-all" data-method="${method}">
+              <div class="p-1.5 rounded-lg ${iconColor} shrink-0">
+                <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-[8px] font-bold text-slate-550 uppercase tracking-wider truncate leading-tight">${method}</p>
+                <p class="font-black text-[11px] text-slate-100 mt-0.5 whitespace-nowrap leading-none">${formatCurrency(amount)}</p>
+              </div>
+            </div>
+          `;
+        });
+
+        paymentHtml += `
+            </div>
+          </div>
+        `;
+        paymentCard.innerHTML = paymentHtml;
+
+        paymentCard.querySelectorAll('.payment-method-item').forEach(el => {
+          el.onclick = () => {
+            const methodSelected = el.dataset.method;
+            showPaymentDetailsModal(methodSelected, paymentCategories[methodSelected] || {});
+          };
+        });
+      }
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function showPaymentDetailsModal(method, categories) {
+      document.getElementById('payment-details-title').textContent = `Gastos: ${method}`;
+      const container = document.getElementById('payment-details-chart');
+      container.innerHTML = '';
+
+      const sortedCats = Object.entries(categories).map(([name, amount]) => ({
+        name,
+        amount
+      })).sort((a, b) => b.amount - a.amount);
+
+      if (sortedCats.length === 0) {
+         container.innerHTML = `<p class="text-center text-slate-500 text-xs py-10 uppercase">Sem gastos registrados</p>`;
+      } else {
+          let html = `
+            <div class="grid grid-cols-2 gap-3">
+          `;
+          sortedCats.forEach(cat => {
+            const { icon, iconColor } = getCategoryIconAndStyle(cat.name);
+            
+            html += `
+              <div class="bg-slate-955 p-3 rounded-2xl border border-slate-800 flex items-center gap-2.5 animate-in fade-in duration-300">
+                <div class="p-2 rounded-xl ${iconColor} shrink-0">
+                  <i data-lucide="${icon}" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[8px] font-bold text-slate-500 uppercase tracking-wider truncate">${cat.name}</p>
+                  <p class="font-black text-xs text-slate-100 mt-0.5 whitespace-nowrap">${formatCurrency(cat.amount)}</p>
+                </div>
+              </div>
+            `;
+          });
+          html += `</div>`;
+          container.innerHTML = html;
+      }
+
+      document.getElementById('payment-details-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+      }
+    }
+
+    function showCategoryDetailsModal(categoryName, categoryType, monthData) {
+      document.getElementById('category-details-title').textContent = `${categoryName}`;
+      const container = document.getElementById('category-details-chart');
+      container.innerHTML = '';
+
+      const categoryTrans = monthData.filter(t => t.category === categoryName);
+
+      const methodTotals = {};
+      categoryTrans.forEach(t => {
+        const method = t.type === 'income' ? 'Receita' : (t.paymentMethod || 'Não Definido');
+        if (!methodTotals[method]) {
+          methodTotals[method] = 0;
+        }
+        methodTotals[method] += t.displayAmount;
+      });
+
+      const sortedMethods = Object.entries(methodTotals).map(([name, amount]) => ({
+        name,
+        amount
+      })).sort((a, b) => b.amount - a.amount);
+
+      if (sortedMethods.length === 0) {
+        container.innerHTML = `<p class="text-center text-slate-500 text-xs py-10 uppercase">Sem dados registados</p>`;
+      } else {
+        let html = `
+          <div class="grid grid-cols-2 gap-3">
+        `;
+        sortedMethods.forEach(method => {
+          const { icon, iconColor } = getMethodIconAndStyle(method.name);
+
+          html += `
+            <div class="bg-slate-955 p-3 rounded-2xl border border-slate-800 flex items-center gap-2.5 animate-in fade-in duration-300">
+              <div class="p-2 rounded-xl ${iconColor} shrink-0">
+                <i data-lucide="${icon}" class="w-4 h-4"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="text-[8px] font-bold text-slate-550 uppercase tracking-wider truncate">${method.name}</p>
+                <p class="font-black text-xs text-slate-100 mt-0.5 whitespace-nowrap">${formatCurrency(method.amount)}</p>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+        container.innerHTML = html;
+      }
+
+      document.getElementById('category-details-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function renderFidCategories() {
+      const container = document.getElementById('categories-popup-list');
+      container.innerHTML = '';
+      
+      if (state.customCategories.length === 0) {
+        container.innerHTML = `<p class="text-center text-[10px] uppercase font-bold text-slate-500 py-6">Nenhuma categoria cadastrada.</p>`;
+        return;
+      }
+
+      state.customCategories.forEach(c => {
+        const item = document.createElement('div');
+        item.className = "bg-slate-955 p-4 rounded-2xl border border-slate-800 flex justify-between items-center animate-in fade-in duration-200";
+        
+        const limitLabel = parseFloat(c.budget) > 0 ? `<span class="text-[8px] text-slate-400 uppercase font-black bg-slate-900 border border-slate-800 px-1.5 py-0.5 rounded ml-2">Limite: ${formatCurrency(c.budget)}</span>` : '';
+
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-2.5 h-2.5 rounded-full ${c.type === 'income' ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
+            <span class="font-bold text-xs uppercase text-slate-200 tracking-wide">${c.name}</span>
+            ${limitLabel}
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="edit-cat-btn text-slate-400 hover:text-blue-400 transition-colors p-2 bg-slate-900 rounded-xl" data-id="${c.id}" data-name="${c.name}" data-type="${c.type}" data-budget="${c.budget || 0}" title="Editar Categoria">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button class="delete-cat-btn text-slate-600 hover:text-rose-500 transition-colors p-2 bg-slate-900 rounded-xl" data-id="${c.id}" title="Eliminar Categoria">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      container.querySelectorAll('.edit-cat-btn').forEach(btn => btn.onclick = () => {
+        document.getElementById('edit-category-id').value = btn.dataset.id;
+        document.getElementById('edit-category-name').value = btn.dataset.name;
+        document.getElementById('edit-category-type').value = btn.dataset.type;
+        document.getElementById('edit-category-budget').value = btn.dataset.budget || 0;
+        document.getElementById('edit-category-modal').classList.remove('hidden');
+      });
+
+      container.querySelectorAll('.delete-cat-btn').forEach(btn => btn.onclick = () => { 
+        showConfirmModal("Remover Categoria", "Todos os lançamentos que usam esta categoria serão redefinidos para 'Outros'. Deseja prosseguir?", async () => {
+           await DB.deleteDoc(`categories_${LOCAL_KEY}`, btn.dataset.id); 
+           showToast("Categoria removida!", "success"); 
+           renderFidCategories();
+        });
+      });
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    function renderFidCards() {
+      const container = document.getElementById('cards-popup-list');
+      container.innerHTML = '';
+
+      if (state.customCards.length === 0) {
+        container.innerHTML = `<p class="text-center text-[10px] uppercase font-bold text-slate-500 py-6">Nenhuma conta cadastrada.</p>`;
+        return;
+      }
+
+      const cardBalances = getCardBalances();
+
+      state.customCards.forEach(c => {
+        const currentBalance = cardBalances[c.name] || 0;
+        const item = document.createElement('div');
+        item.className = "bg-slate-955 p-4 rounded-2xl border border-slate-800 flex justify-between items-center animate-in fade-in duration-200";
+        item.innerHTML = `
+          <div class="flex-1 min-w-0 pr-2">
+             <div class="flex items-center gap-2">
+                <i data-lucide="building-2" class="w-4 h-4 text-slate-500"></i>
+                <span class="font-bold text-xs uppercase text-slate-200 tracking-wide truncate">${c.name}</span>
+             </div>
+             <p class="text-[8px] text-slate-550 uppercase tracking-widest font-black mt-1">Saldo Total: <span class="${currentBalance >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${formatCurrency(currentBalance)}</span></p>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button class="edit-card-btn text-slate-400 hover:text-purple-400 transition-colors p-2 bg-slate-900 rounded-xl" data-id="${c.id}" data-name="${c.name}" data-details="${c.details || ''}" data-initial="${c.initial || 0}" title="Editar Conta">
+              <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+            </button>
+            <button class="delete-card-btn text-slate-600 hover:text-rose-500 transition-colors p-2 bg-slate-900 rounded-xl" data-id="${c.id}" title="Eliminar Conta">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      container.querySelectorAll('.edit-card-btn').forEach(btn => btn.onclick = () => {
+        document.getElementById('edit-card-id').value = btn.dataset.id;
+        document.getElementById('edit-card-name').value = btn.dataset.name;
+        document.getElementById('edit-card-details').value = btn.dataset.details;
+        document.getElementById('edit-card-initial').value = btn.dataset.initial;
+        document.getElementById('edit-card-modal').classList.remove('hidden');
+      });
+
+      container.querySelectorAll('.delete-card-btn').forEach(btn => btn.onclick = () => { 
+        showConfirmModal("Remover Conta", "Todos os lançamentos vinculados a ela ficarão sem conta definida. Deseja prosseguir?", async () => {
+           await DB.deleteDoc(`cards_${LOCAL_KEY}`, btn.dataset.id); 
+           showToast("Conta removida!", "success"); 
+           renderFidCards();
+        });
+      });
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    document.getElementById('btn-save-fb-config').onclick = async () => {
+       const inputVal = document.getElementById('firebase-config-input').value.trim();
+       if (!inputVal) {
+          showToast("Insira um objeto JSON de credenciais válido.", "warning");
+          return;
+       }
+       try {
+          const parsed = JSON.parse(inputVal);
+          if (!parsed.apiKey || !parsed.projectId) {
+             showToast("JSON inválido. Falta a apiKey ou projectId.", "warning");
+             return;
+          }
+          localStorage.setItem(`firebase_config_${LOCAL_KEY}`, JSON.stringify(parsed));
+          showToast("Configuração guardada! A reconectar...", "success");
+          
+          if (cloudUnsubscribe) { cloudUnsubscribe(); cloudUnsubscribe = null; }
+          isCloudConnected = false;
+          updateSyncUI();
+          await initFirebase();
+       } catch (err) {
+          showToast("Formato de texto JSON inválido.", "error");
+       }
+    };
+
+    document.getElementById('btn-clear-fb-config').onclick = () => {
+       localStorage.removeItem(`firebase_config_${LOCAL_KEY}`);
+       document.getElementById('firebase-config-input').value = '';
+       showToast("Servidor de nuvem desligado.", "info");
+       if (cloudUnsubscribe) { cloudUnsubscribe(); cloudUnsubscribe = null; }
+       isCloudConnected = false;
+       updateSyncUI();
+       renderAll();
+    };
+
+    document.getElementById('btn-toggle-fb-help').onclick = () => {
+       const box = document.getElementById('fb-help-box');
+       box.classList.toggle('hidden');
+    };
+
+    document.getElementById('btn-connect-cloud').onclick = () => {
+       const codeInput = document.getElementById('cloud-couple-code').value.trim().toUpperCase();
+       if (!codeInput) {
+          showToast("Insira um código.", "warning");
+          return;
+       }
+       if (!isCloudConnected) {
+          showToast("Configure e ative primeiro o Servidor de Nuvem acima.", "warning");
+          return;
+       }
+       state.sharingCode = codeInput;
+       localStorage.setItem(`sharingCode_${LOCAL_KEY}`, state.sharingCode);
+       activateRealtimeSync();
+       showToast(`Ligado ao canal: ${state.sharingCode}`, "success");
+    };
+
+    document.getElementById('btn-disconnect-cloud').onclick = () => {
+       if (cloudUnsubscribe) cloudUnsubscribe();
+       state.sharingCode = '';
+       localStorage.removeItem(`sharingCode_${LOCAL_KEY}`);
+       updateSyncUI();
+       showToast("Sincronização offline ativada.", "info");
+       renderAll();
+    };
+
+    document.getElementById('btn-generate-code').onclick = () => {
+       const generated = 'Finanças-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+       document.getElementById('cloud-couple-code').value = generated;
+       showToast("Novo código gerado!", "info");
+    };
+
+    document.getElementById('form-edit-category').onsubmit = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-category-id').value;
+      const name = document.getElementById('edit-category-name').value.trim();
+      const type = document.getElementById('edit-category-type').value;
+      const budget = parseFloat(document.getElementById('edit-category-budget').value) || 0;
+      if (!name) return;
+
+      const targetCat = state.customCategories.find(c => c.id === id);
+      const oldName = targetCat ? targetCat.name : null;
+
+      try {
+        await DB.updateDoc(`categories_${LOCAL_KEY}`, id, { name, type, budget });
+        
+        if (oldName && oldName !== name) {
+          const matchedTransactions = state.transactions.filter(t => t.category === oldName);
+          for (const t of matchedTransactions) {
+            await DB.updateDoc(`transactions_${LOCAL_KEY}`, t.id, { category: name });
+          }
+        }
+
+        document.getElementById('edit-category-modal').classList.add('hidden');
+        showToast("Categoria atualizada!", "success");
+        renderFidCategories();
+      } catch (err) { showToast("Erro ao atualizar categoria", "error"); }
+    };
+
+    document.getElementById('form-edit-card').onsubmit = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-card-id').value;
+      const name = document.getElementById('edit-card-name').value.trim();
+      const details = document.getElementById('edit-card-details').value.trim();
+      const initial = parseFloat(document.getElementById('edit-card-initial').value) || 0;
+      if (!name) return;
+
+      const targetCard = state.customCards.find(c => c.id === id);
+      const oldName = targetCard ? targetCard.name : null;
+
+      try {
+        await DB.updateDoc(`cards_${LOCAL_KEY}`, id, { name, details, initial });
+        
+        if (oldName && oldName !== name) {
+          const matchedTransactions = state.transactions.filter(t => t.cardUsed === oldName);
+          for (const t of matchedTransactions) {
+            await DB.updateDoc(`transactions_${LOCAL_KEY}`, t.id, { cardUsed: name });
+          }
+        }
+
+        document.getElementById('edit-card-modal').classList.add('hidden');
+        showToast("Conta bancária atualizada!", "success");
+        renderFidCards();
+      } catch (err) { showToast("Erro ao atualizar conta", "error"); }
+    };
+
+    document.getElementById('form-edit-transaction').onsubmit = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('edit-trans-id').value;
+      const type = document.getElementById('edit-trans-type').value;
+      
+      const amountRaw = document.getElementById('edit-trans-amount').value.replace(/\D/g, "");
+      const num = parseFloat(amountRaw) / 100;
+      
+      const desc = document.getElementById('edit-trans-desc').value.trim();
+      const cat = document.getElementById('edit-trans-category').value;
+      const m = document.getElementById('edit-trans-month').value;
+      const tDate = document.getElementById('edit-trans-date').value;
+      const card = document.getElementById('edit-trans-card').value;
+      const paymentMethod = type === 'expense' ? document.getElementById('edit-trans-method').value : null;
+      const installments = parseInt(document.getElementById('edit-trans-installments').value) || 1;
+
+      if (!cat || cat === '') {
+        showToast("Por favor, selecione uma categoria válida!", "warning");
+        document.getElementById('edit-trans-category').focus();
+        return;
+      }
+
+      if (!desc || isNaN(num) || num <= 0) {
+        showToast("Certifique-se de que o valor é superior a zero.", "warning");
+        return;
+      }
+
+      try {
+        await DB.updateDoc(`transactions_${LOCAL_KEY}`, id, {
+          description: desc,
+          amount: num,
+          category: cat,
+          billingMonth: m,
+          date: tDate,
+          paymentMethod: paymentMethod,
+          cardUsed: card || null,
+          isInstallment: type === 'expense' && editIsInstallment,
+          installmentsCount: (type === 'expense' && editIsInstallment) ? installments : 1
+        });
+        document.getElementById('edit-transaction-modal').classList.add('hidden');
+        showToast("Lançamento atualizado!", "success");
+      } catch (err) { showToast("Erro ao atualizar lançamento", "error"); }
+    };
+
+    const editAmountInput = document.getElementById('edit-trans-amount');
+    editAmountInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, "");
+      if (!value) { e.target.value = ""; return; }
+      const numValue = parseFloat(value) / 100;
+      e.target.value = numValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    });
+
+    document.getElementById('edit-trans-date').addEventListener('change', (e) => {
+      if (e.target.value) {
+        const parts = e.target.value.split('-'); 
+        if (parts.length === 3) {
+          const billingRef = `${parts[1]}/${parts[0]}`;
+          const select = document.getElementById('edit-trans-month');
+          addBillingMonthOptionIfMissing(select, billingRef);
+          select.value = billingRef;
+        }
+      }
+    });
+
+    function updateEditInstallmentButtons() {
+      const btnNo = document.getElementById('btn-edit-installment-no');
+      const btnYes = document.getElementById('btn-edit-installment-yes');
+      const input = document.getElementById('edit-trans-installments');
+      if (editIsInstallment) {
+        input.classList.remove('hidden');
+        btnNo.className = "flex-1 py-2 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent";
+        btnYes.className = "flex-1 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700";
+      } else {
+        input.classList.add('hidden');
+        btnYes.className = "flex-1 py-2 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent";
+        btnNo.className = "flex-1 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold border border-slate-700";
+      }
+    }
+
+    document.getElementById('btn-edit-installment-no').onclick = () => { 
+      editIsInstallment = false; 
+      updateEditInstallmentButtons(); 
+      document.getElementById('edit-trans-amount').focus();
+    };
+    document.getElementById('btn-edit-installment-yes').onclick = () => { 
+      editIsInstallment = true; 
+      updateEditInstallmentButtons(); 
+      const editInstInput = document.getElementById('edit-trans-installments');
+      editInstInput.focus();
+      editInstInput.select();
+    };
+
+    document.getElementById('btn-close-edit-category').onclick = () => document.getElementById('edit-category-modal').classList.add('hidden');
+    document.getElementById('btn-close-edit-card').onclick = () => document.getElementById('edit-card-modal').classList.add('hidden');
+    document.getElementById('btn-close-edit-trans').onclick = () => document.getElementById('edit-transaction-modal').classList.add('hidden');
+    document.getElementById('btn-close-payment-details').onclick = () => document.getElementById('payment-details-modal').classList.add('hidden');
+    document.getElementById('btn-close-category-details').onclick = () => document.getElementById('category-details-modal').classList.add('hidden');
+
+    function handleGenerateReport() {
+      const monthData = expandedTransactions().filter(t => t.displayMonth === state.selectedHistoryMonth);
+      if (monthData.length === 0) { showToast(`Sem lançamentos no período ${state.selectedHistoryMonth}`, "warning"); return; }
+      
+      const summary = getMonthSummary(state.selectedHistoryMonth);
+      document.getElementById('statement-period').textContent = state.selectedHistoryMonth;
+      document.getElementById('statement-date').textContent = new Date().toLocaleDateString('pt-PT');
+      
+      document.getElementById('statement-income').textContent = formatCurrency(summary.income);
+      document.getElementById('statement-expense').textContent = formatCurrency(summary.expense);
+      document.getElementById('statement-balance').textContent = formatCurrency(summary.balance);
+      
+      const tableBody = document.getElementById('statement-table-body');
+      tableBody.innerHTML = '';
+      monthData.forEach(t => {
+        const tr = document.createElement('tr'); tr.className = "text-sm";
+        let relDate = '';
+        if (t.date) {
+          const parts = t.date.split('-');
+          if (parts.length === 3) relDate = `${parts[2]}/${parts[1]}`;
+        }
+        tr.innerHTML = `
+          <td class="py-5">
+            <p class="font-bold text-slate-900 uppercase">${t.description}</p>
+            <div class="flex items-center gap-1.5 mt-1 text-[9px] font-black text-slate-400">
+              ${relDate ? `<span>${relDate}</span> •` : ''}
+              ${t.cardUsed ? `<span class="uppercase">${t.cardUsed}</span> •` : ''}
+              ${t.paymentMethod && t.type === 'expense' ? `<span class="uppercase">${t.paymentMethod}</span>` : ''}
+            </div>
+          </td>
+          <td class="py-5 font-bold text-slate-400 uppercase text-[10px]">${t.category}</td>
+          <td class="py-5 text-center text-xs font-bold text-slate-400">${t.installmentLabel || '1/1'}</td>
+          <td class="py-5 text-right font-black ${t.type === 'income' ? 'text-emerald-600' : 'text-slate-900'}">${t.type === 'income' ? '+' : '-'} ${formatCurrency(t.displayAmount)}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+      document.getElementById('statement-modal').classList.remove('hidden');
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }
+
+    async function handleShareStatement() {
+      const summary = getMonthSummary(state.selectedHistoryMonth);
+      const text = `📊 *Resumo Financeiro - ${state.selectedHistoryMonth}*\n\n💰 *Saldo:* ${formatCurrency(summary.balance)}\n✅ *Receitas:* ${formatCurrency(summary.income)}\n❌ *Despesas:* ${formatCurrency(summary.expense)}\n\n_Controle Financeiro_`;
+      
+      if (navigator.share) { 
+        try { 
+          await navigator.share({ title: `Finanças - ${state.selectedHistoryMonth}`, text }); 
+          showToast("Extrato partilhado!", "success"); 
+        } catch (err) {} 
+      } else { 
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          showToast("Extrato copiado para a área de transferência!", "success");
+        } catch (err) {
+          showToast("Erro ao partilhar.", "error");
+        }
+        document.body.removeChild(textarea);
+      }
+    }
+
+    document.getElementById('btn-export-backup').onclick = () => {
+      const backupData = {
+        transactions: getLocalCollection(`transactions_${LOCAL_KEY}`),
+        categories: getLocalCollection(`categories_${LOCAL_KEY}`),
+        cards: getLocalCollection(`cards_${LOCAL_KEY}`),
+        quickadd: getLocalCollection(`quickadd_${LOCAL_KEY}`),
+        currency: state.currency,
+        exportedAt: new Date().toISOString()
+      };
+      
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `Controle_Financeiro_backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Cópia de segurança guardada!", "success");
+    };
+
+    document.getElementById('import-backup-file').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const importedData = JSON.parse(event.target.result);
+          if (importedData.transactions && importedData.categories && importedData.cards) {
+            localStorage.setItem(`transactions_${LOCAL_KEY}`, JSON.stringify(importedData.transactions));
+            localStorage.setItem(`categories_${LOCAL_KEY}`, JSON.stringify(importedData.categories));
+            localStorage.setItem(`cards_${LOCAL_KEY}`, JSON.stringify(importedData.cards));
+            
+            state.transactions = importedData.transactions;
+            state.customCategories = importedData.categories;
+            state.customCards = importedData.cards;
+
+            if (importedData.quickadd) {
+               localStorage.setItem(`quickadd_${LOCAL_KEY}`, JSON.stringify(importedData.quickadd));
+               state.quickAddTemplates = importedData.quickadd;
+            }
+            if (importedData.currency) {
+               state.currency = importedData.currency;
+               localStorage.setItem(`currency_${LOCAL_KEY}`, state.currency);
+            }
+            
+            showToast("Backup restaurado!", "success");
+            
+            if (state.fidSubTab === 'categories') {
+              renderFidCategories();
+            } else if (state.fidSubTab === 'cards') {
+              renderFidCards();
+            }
+            renderAll();
+          } else {
+            showToast("Ficheiro de backup inválido.", "error");
+          }
+        } catch (err) {
+          showToast("Erro ao importar o ficheiro.", "error");
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    document.getElementById('btn-danger-reset').onclick = () => {
+      showConfirmModal("Limpeza de Dados Absoluta", "Deseja apagar TODOS os dados da aplicação? Esta ação é definitiva.", () => {
+        showConfirmModal("Confirmar Reinicialização?", "Lançamentos, categorias e sincronizações serão removidos permanentemente.", () => {
+          localStorage.clear();
+          state.transactions = [];
+          state.customCategories = [];
+          state.customCards = [];
+          state.quickAddTemplates = [];
+          state.sharingCode = '';
+          seedLocalData();
+          initApp();
+          showToast("Aplicação reiniciada!", "success");
+          document.getElementById('ajustes-manager-modal').classList.add('hidden');
+        });
+      });
+    };
+
+    document.getElementById('modal-tab-categories').onclick = () => openAjustesModal('categories');
+    document.getElementById('modal-tab-cards').onclick = () => openAjustesModal('cards');
+    document.getElementById('modal-tab-pref').onclick = () => openAjustesModal('pref');
+    
+    document.getElementById('btn-close-ajustes-manager').onclick = () => {
+      document.getElementById('ajustes-manager-modal').classList.add('hidden');
+    };
+
+    document.getElementById('form-add-category').onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('new-category-name').value.trim();
+      const type = document.getElementById('new-category-type').value;
+      const budget = parseFloat(document.getElementById('new-category-budget').value) || 0;
+      await DB.addDoc(`categories_${LOCAL_KEY}`, { name, type, budget });
+      document.getElementById('new-category-name').value = ''; 
+      document.getElementById('new-category-budget').value = ''; 
+      showToast("Categoria adicionada com sucesso!", "success");
+      renderFidCategories();
+    };
+
+    document.getElementById('form-add-card').onsubmit = async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('new-card-name').value.trim();
+      const details = document.getElementById('new-card-details').value.trim();
+
+      if (!name) {
+        showToast("Informe o nome do banco.", "error");
+        return;
+      }
+
+      await DB.addDoc(`cards_${LOCAL_KEY}`, {
+        name,
+        details,
+        initial: 0
+      });
+
+      document.getElementById('new-card-name').value = '';
+      document.getElementById('new-card-details').value = '';
+
+      showToast("Conta criada com sucesso!", "success");
+      renderFidCards();
+    };
+    
+    document.getElementById('btn-installment-no').onclick = () => { 
+      state.isInstallment = false; 
+      document.getElementById('transaction-installments').classList.add('hidden'); 
+      document.getElementById('installment-simulation').classList.add('hidden'); 
+      document.getElementById('btn-installment-yes').className = "flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent"; 
+      document.getElementById('btn-installment-no').className = "flex-1 py-1.5 bg-slate-855 text-white rounded-xl text-xs font-bold border border-slate-700"; 
+      saveActiveDraft();
+      document.getElementById('transaction-amount').focus();
+    };
+    document.getElementById('btn-installment-yes').onclick = () => { 
+      state.isInstallment = true; 
+      const instInput = document.getElementById('transaction-installments');
+      instInput.classList.remove('hidden'); 
+      document.getElementById('btn-installment-no').className = "flex-1 py-1.5 bg-slate-900 text-slate-500 rounded-xl text-xs font-bold border border-transparent"; 
+      document.getElementById('btn-installment-yes').className = "flex-1 py-1.5 bg-slate-855 text-white rounded-xl text-xs font-bold border border-slate-700"; 
+      saveActiveDraft();
+      instInput.focus();
+      instInput.select();
+    };
+
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.onclick = () => {
+      const targetTab = btn.dataset.tab;
+      
+      if (targetTab === 'fid') {
+        openAjustesModal('categories');
+        return;
+      }
+      
+      document.querySelectorAll('.nav-tab-btn').forEach(el => el.classList.add('opacity-40'));
+      btn.classList.remove('opacity-40');
+      state.activeTab = targetTab;
+      renderAll();
+      
+      if (state.activeTab === 'expense' || state.activeTab === 'income') {
+        document.getElementById('transaction-amount').focus();
+      }
+    });
+
+    function getBillingMonthsList() {
+      const monthsSet = new Set();
+      const baseDate = new Date();
+      for (let i = -6; i <= 12; i++) {
+        const d = new Date(baseDate.getFullYear(), baseDate.getMonth() + i, 1);
+        const m = (d.getMonth() + 1).toString().padStart(2, '0');
+        monthsSet.add(`${m}/${d.getFullYear()}`);
+      }
+      state.transactions.forEach(t => {
+        if (t.billingMonth) monthsSet.add(t.billingMonth);
+      });
+      return Array.from(monthsSet).sort((a, b) => {
+        const [mA, yA] = a.split('/').map(Number);
+        const [mB, yB] = b.split('/').map(Number);
+        return yA !== yB ? yA - yB : mA - mB;
+      });
+    }
+
+    function addBillingMonthOptionIfMissing(selectElement, billingMonth) {
+      if (!optionExists(selectElement, billingMonth)) {
+        const opt = document.createElement('option');
+        opt.value = billingMonth;
+        opt.textContent = billingMonth;
+        selectElement.appendChild(opt);
+      }
+    }
+
+    document.getElementById('btn-show-statement').onclick = handleGenerateReport;
+    document.getElementById('btn-close-statement').onclick = () => document.getElementById('statement-modal').classList.add('hidden');
+    
+    document.getElementById("btn-print-action").addEventListener("click", () => {
+        const conteudo = document.getElementById("statement-content");
+        conteudo.style.overflow = "visible";
+        conteudo.style.maxHeight = "none";
+        conteudo.style.height = "auto";
+
+        window.print();
+
+        setTimeout(() => {
+            conteudo.style.overflow = "auto";
+            conteudo.style.height = "";
+            conteudo.style.maxHeight = "";
+        }, 500);
+    });
+    
+    document.getElementById('btn-share-action').onclick = handleShareStatement;
+
+    window.onload = () => {
+      initApp();
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => {
+            splash.classList.add('hidden');
+            const amountInput = document.getElementById('transaction-amount');
+            if (amountInput) amountInput.focus();
+          }, 750);
+        }
+      }, 1500);
+    };
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js")
+          .then(() => console.log("Service Worker registrado"))
+          .catch(err => console.error(err));
+      });
+    }
+  </script>
+</body>
+</html>

@@ -358,8 +358,7 @@
                 <div id="payment-method-container" class="space-y-1">
                    <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Forma de Pagamento</label>
                    <select id="transaction-method" class="w-full bg-slate-900 border border-slate-800 p-3.5 rounded-2xl outline-none font-bold text-xs text-slate-200 uppercase">
-                      <option value="Multibanco">Multibanco</option>
-                      <option value="MB Way">MB Way</option>
+                      <option value="Pix">Pix</option>
                       <option value="Dinheiro">Dinheiro</option>
                       <option value="Débito">Débito</option>
                       <option value="Crédito">Crédito</option>
@@ -771,8 +770,7 @@
               <div id="edit-trans-method-container" class="space-y-1">
                  <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">Forma Pagamento</label>
                  <select id="edit-trans-method" class="w-full p-3.5 bg-slate-955 border border-slate-800 rounded-2xl outline-none font-bold text-xs text-white uppercase">
-                    <option value="Multibanco">Multibanco</option>
-                    <option value="MB Way">MB Way</option>
+                    <option value="Pix">Pix</option>
                     <option value="Dinheiro">Dinheiro</option>
                     <option value="Débito">Débito</option>
                     <option value="Crédito">Crédito</option>
@@ -925,8 +923,7 @@
 
     function getPaymentMethodStyle(method) {
       switch (method) {
-        case 'Multibanco': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
-        case 'MB Way': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+        case 'Pix': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
         case 'Dinheiro': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
         case 'Débito': return 'bg-orange-500/10 text-orange-400 border border-orange-500/20';
         case 'Crédito': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
@@ -936,8 +933,7 @@
 
     function getMethodIconAndStyle(method) {
       switch (method) {
-        case 'Multibanco': return { icon: 'credit-card', iconColor: 'bg-blue-500/10 text-blue-400' };
-        case 'MB Way': return { icon: 'smartphone', iconColor: 'bg-purple-500/10 text-purple-400' };
+        case 'Pix': return { icon: 'smartphone', iconColor: 'bg-purple-500/10 text-purple-400' };
         case 'Dinheiro': return { icon: 'banknote', iconColor: 'bg-emerald-500/10 text-emerald-400' };
         case 'Débito': return { icon: 'credit-card', iconColor: 'bg-orange-500/10 text-orange-400' };
         case 'Crédito': return { icon: 'credit-card', iconColor: 'bg-rose-500/10 text-rose-400' };
